@@ -93,6 +93,19 @@ Check in this order, and STOP at the first one that fires:
 Before computing the appointment window, use as_of() as the authoritative
 start date. Never use date_received as a substitute for as_of().
 
+Use window_weeks returned by check_referral_criteria to calculate
+the end of the appointment window.
+
+The window must be:
+  from = as_of
+  to = as_of + window_weeks
+
+For example, if as_of is 2026-09-09 and window_weeks is 8,
+the window is 2026-09-09 through 2026-11-04.
+
+Do not call get_clinic_slots until both the window start and
+window end have been calculated.
+
 Only if all four pass do you query a slot.""",
 }
 #-------------修改每次都是json格式+for problemb段目的是与scripted保持一致4个turn--------------
@@ -119,15 +132,18 @@ Do not split independent required calls across separate turns.
 Only use separate turns when one call needs the result of another.
 
 For Problem B, after get_referral returns the referral_id, specialty,
-and patient_id, check_referral_criteria and lookup_patient are independent.
-Their arguments are already known, so put BOTH in the SAME turn:
+and patient_id, check_referral_criteria, lookup_patient, and as_of
+are independent.
 
-{"thought": "Both required checks are independent.",
+Their arguments are already known, so put ALL THREE in the SAME turn:
+
+{"thought": "The required checks and as_of are independent.",
  "calls": [
    ["check_referral_criteria",
     {"specialty": "<specialty>", "referral_id": "<referral_id>"}],
    ["lookup_patient",
-    {"patient_id": "<patient_id>"}]
+    {"patient_id": "<patient_id>"}],
+   ["as_of", {}]
  ]}
 
 Wait for both observations, then apply the routing order.

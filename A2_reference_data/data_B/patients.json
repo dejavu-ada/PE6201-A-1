@@ -53,16 +53,6 @@
     "existing_appointments": []
   },
   {
-    "patient_id": "P-2003",
-    "date_of_birth": "1994-02-11",
-    "existing_appointments": []
-  },
-  {
-    "patient_id": "P-2004",
-    "date_of_birth": "1988-07-20",
-    "existing_appointments": []
-  },
-  {
     "patient_id": "P-2005",
     "date_of_birth": "1977-04-05",
     "existing_appointments": []
@@ -92,5 +82,179 @@
     "patient_id": "P-2009",
     "date_of_birth": "1998-06-23",
     "existing_appointments": []
+  },
+  {
+    "patient_id": "P-2010",
+    "date_of_birth": "1989-01-12",
+    "existing_appointments": []
+  },
+  {
+    "patient_id": "P-2011",
+    "date_of_birth": "1972-05-03",
+    "existing_appointments": []
+  },
+  {
+    "patient_id": "P-2012",
+    "date_of_birth": "1995-08-21",
+    "existing_appointments": []
+  },
+  {
+    "patient_id": "P-2013",
+    "date_of_birth": "1991-11-07",
+    "existing_appointments": []
+  },
+  {
+    "patient_id": "P-2014",
+    "date_of_birth": "1984-04-16",
+    "existing_appointments": [
+      {
+        "specialty": "OPH",
+        "clinic": "OPH-C2",
+        "date": "2026-10-28"
+      }
+    ]
+  },
+  {
+    "patient_id": "P-2015",
+    "date_of_birth": "1978-09-14",
+    "existing_appointments": []
+  },
+  {
+    "patient_id": "P-2016",
+    "date_of_birth": "1993-02-27",
+    "existing_appointments": []
+  },
+  {
+    "patient_id": "P-2017",
+    "date_of_birth": "1986-06-11",
+    "existing_appointments": []
+  },
+  {
+    "patient_id": "P-2018",
+    "date_of_birth": "2000-12-05",
+    "existing_appointments": []
+  },
+  {
+    "patient_id": "P-2019",
+    "date_of_birth": "1969-03-18",
+    "existing_appointments": []
+  },
+  {
+    "patient_id": "P-2020",
+    "date_of_birth": "1987-07-09",
+    "existing_appointments": []
+  },
+  {
+    "patient_id": "P-2021",
+    "date_of_birth": "1975-10-30",
+    "existing_appointments": []
+  },
+  {
+    "patient_id": "P-2022",
+    "date_of_birth": "1997-01-26",
+    "existing_appointments": []
+  },
+  {
+    "patient_id": "P-2023",
+    "date_of_birth": "1964-06-22",
+    "existing_appointments": []
+  },
+  {
+    "patient_id": "P-2024",
+    "date_of_birth": "1990-05-13",
+    "existing_appointments": [
+      {
+        "specialty": "DER",
+        "clinic": "DER-C1",
+        "date": "2026-08-20"
+      }
+    ]
+  },
+  {
+    "patient_id": "P-2025",
+    "date_of_birth": "1983-03-02",
+    "existing_appointments": []
+  },
+  {
+    "patient_id": "P-2026",
+    "date_of_birth": "1996-09-29",
+    "existing_appointments": []
+  },
+  {
+    "patient_id": "P-2027",
+    "date_of_birth": "1970-12-17",
+    "existing_appointments": []
+  },
+  {
+    "patient_id": "P-2028",
+    "date_of_birth": "1992-04-08",
+    "existing_appointments": []
+  },
+  {
+    "patient_id": "P-2029",
+    "date_of_birth": "1980-08-25",
+    "existing_appointments": []
+  },
+  {
+    "patient_id": "P-2030",
+    "date_of_birth": "1976-02-19",
+    "existing_appointments": []
+  },
+  {
+    "patient_id": "P-2031",
+    "date_of_birth": "1999-07-15",
+    "existing_appointments": []
+  },
+  {
+    "patient_id": "P-2032",
+    "date_of_birth": "1988-10-04",
+    "existing_appointments": []
+  },
+  {
+    "patient_id": "P-2033",
+    "date_of_birth": "1981-01-23",
+    "existing_appointments": [
+      {
+        "specialty": "ORT",
+        "clinic": "ORT-C1",
+        "date": "2026-07-01"
+      }
+    ]
+  },
+  {
+    "patient_id": "P-2034",
+    "date_of_birth": "1994-11-28",
+    "existing_appointments": []
+  },
+  {
+    "patient_id": "P-2035",
+    "date_of_birth": "1973-06-06",
+    "existing_appointments": []
+  },
+  {
+    "patient_id": "P-2036",
+    "date_of_birth": "1998-03-31",
+    "existing_appointments": []
+  },
+  {
+    "patient_id": "P-2037",
+    "date_of_birth": "1985-09-12",
+    "existing_appointments": []
+  },
+  {
+    "patient_id": "P-2038",
+    "date_of_birth": "1991-02-14",
+    "existing_appointments": []
+  },
+  {
+    "patient_id": "P-2039",
+    "date_of_birth": "1979-05-27",
+    "existing_appointments": [
+      {
+        "specialty": "CARD",
+        "clinic": "CARD-C2",
+        "date": "2026-10-21"
+      }
+    ]
   }
 ]

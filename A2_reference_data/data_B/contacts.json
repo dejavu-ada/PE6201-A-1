@@ -1,0 +1,72 @@
+[
+  {
+    "patient_id": "P-1180",
+    "method": "sms",
+    "value": "+65 8••• ••21"
+  },
+  {
+    "patient_id": "P-1192",
+    "method": "phone",
+    "value": "+65 6••• ••04"
+  },
+  {
+    "patient_id": "P-1204",
+    "method": "email",
+    "value": "p1204@example.test"
+  },
+  {
+    "patient_id": "P-1215",
+    "method": "sms",
+    "value": "+65 9••• ••77"
+  },
+  {
+    "patient_id": "P-1227",
+    "method": "email",
+    "value": "p1227@example.test"
+  },
+  {
+    "patient_id": "P-1233",
+    "method": "phone",
+    "value": "+65 6••• ••39"
+  },
+  {
+    "patient_id": "P-1241",
+    "method": "sms",
+    "value": "+65 8••• ••55"
+  },
+  {
+    "patient_id": "P-2003",
+    "method": "sms",
+    "value": "+65 9000 2003"
+  },
+  {
+    "patient_id": "P-2004",
+    "method": "sms",
+    "value": "+65 9000 2004"
+  },
+  {
+    "patient_id": "P-2005",
+    "method": "email",
+    "value": "p2005@example.com"
+  },
+  {
+    "patient_id": "P-2006",
+    "method": "sms",
+    "value": "+65 9000 2006"
+  },
+  {
+    "patient_id": "P-2007",
+    "method": "email",
+    "value": "p2007@example.com"
+  },
+  {
+    "patient_id": "P-2008",
+    "method": "sms",
+    "value": "+65 9000 2008"
+  },
+  {
+    "patient_id": "P-2009",
+    "method": "email",
+    "value": "p2009@example.com"
+  }
+]

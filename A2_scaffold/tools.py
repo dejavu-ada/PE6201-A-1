@@ -53,7 +53,6 @@ import json
 import os
 
 import config
-
 _CACHE = {}
 
 

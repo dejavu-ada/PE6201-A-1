@@ -613,21 +613,39 @@ GATED_ACTION = {"B": "book_slot", "A": "issue_decision_letter"}
 # the descriptor is what the MODEL reads - the comments above are what
 # YOU read. They overlap, but they are not the same document: a
 # descriptor is written to be acted on, a comment to be understood.
-DESCRIPTORS = {
+DESCRIPTORS_v1 = {
     # ---- Problem B -------------------------------------------------
-    "get_referral": {
-        "name": "get_referral",
-        "purpose": "Fetch the referral you have been asked to handle.",
-        "when": "Turn 1, alone. Everything else needs what it returns, so "
-                "nothing can be run alongside it.",
-        "args": {"referral_id": "str, the case id you were given"},
-        "returns": "{referral_id, patient_id, referring_clinic, specialty, "
-                   "date_received, clinical_summary, tests_attached, "
-                   "tests_attached_on (may be absent)}",
-        "failure": "Returns None when no referral has that id. That is a "
-                   "broken case, not an outcome - stop and say so rather "
-                   "than inventing a decision.",
+"get_referral": {
+    "name_signature": (
+        "get_referral(referral_id: str) -> dict | None"
+    ),
+    "what": (
+        "Fetch the referral record that the agent has been asked "
+        "to process."
+    ),
+    "input": {
+        "referral_id": (
+            "Required str. The case id supplied by the evaluation "
+            "harness. Pass it unchanged."
+        )
     },
+    "returns": (
+        "One referral object containing referral_id, patient_id, "
+        "referring_clinic, specialty, date_received, clinical_summary "
+        "and tests_attached; otherwise None."
+    ),
+    "fails_when": (
+        "Fails when no referral matches referral_id. This indicates "
+        "a broken case, not a normal business outcome."
+    ),
+    "irreversible": (
+        "No. This is a read-only lookup and does not modify referral data."
+    ),
+    "when": (
+        "Call first and alone because every later tool depends on "
+        "the returned referral data."
+    ),
+},
 #------------修改加上lookup_patient是必选项-------------------
     "lookup_patient": {
         "name": "lookup_patient",

@@ -24,10 +24,16 @@ import os
 # ─────────────────────────────────────────────────────────────────────
 # THE THREE STRINGS. Change these, change nothing else.
 # ─────────────────────────────────────────────────────────────────────
-BACKEND = "scripted"          # "scripted" | "live"
+BACKEND = os.environ.get("A2_BACKEND", "scripted")  # "scripted" | "live"
 
-MODEL = "openai/gpt-4o-mini"  # only used when BACKEND == "live"
+MODEL = os.environ.get("A2_MODEL", "openai/gpt-4o-mini")
 BASE_URL = "https://openrouter.ai/api/v1"
+
+# D2(b) controlled experiment. The default submission path uses v2, while
+# DESCRIPTOR_VERSION=v1 selects the preserved baseline without editing code.
+DESCRIPTOR_VERSION = os.environ.get("DESCRIPTOR_VERSION", "v2").lower()
+if DESCRIPTOR_VERSION not in ("v1", "v2"):
+    raise ValueError("DESCRIPTOR_VERSION must be 'v1' or 'v2'")
 
 # Your key never goes in this file. Put it in the environment:
 #     export OPENROUTER_API_KEY="sk-or-..."
@@ -140,6 +146,7 @@ def summary():
     where = "FREE, deterministic" if BACKEND == "scripted" else "LIVE - this costs money"
     model = "(no model)" if BACKEND == "scripted" else MODEL
     line = ("BACKEND=%s  %s  |  PROBLEM=%s  |  model=%s  |  "
-            "cap=%d turns  |  autonomy=%s"
-            % (BACKEND, where, PROBLEM, model, MAX_TURNS, AUTONOMY))
+            "descriptor=%s  |  cap=%d turns  |  autonomy=%s"
+            % (BACKEND, where, PROBLEM, model, DESCRIPTOR_VERSION,
+               MAX_TURNS, AUTONOMY))
     return line + _stale_bytecode_warning()

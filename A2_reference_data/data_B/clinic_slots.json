@@ -182,5 +182,13 @@
     "date": "2026-11-04",
     "time": "09:00",
     "capacity_remaining": 1
+  },
+  {
+    "clinic": "NEU-C2",
+    "specialty": "NEU",
+    "band": "urgent",
+    "date": "2026-09-18",
+    "time": "09:30",
+    "capacity_remaining": 1
   }
 ]

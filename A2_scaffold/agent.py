@@ -49,11 +49,13 @@ def run_case(case_id, problem=None, approve=None, verbose=False):
     # backend this IS the experiment D2(b) measures: the descriptors and
     # the routing rules, assembled by prompt.build_system_prompt().
     #     python3 run_eval.py --prompt      to see the exact text
+    descriptor_table = tools.DESCRIPTOR_SETS[config.DESCRIPTOR_VERSION]
     backend = make_backend(
         case_id,
-        tool_descriptors=[tools.DESCRIPTORS[n] for n in tools.REGISTRY[problem]
-                          if n in tools.DESCRIPTORS],
-        system_prompt=prompt.build_system_prompt(problem))
+        tool_descriptors=[descriptor_table[n] for n in tools.REGISTRY[problem]
+                          if n in descriptor_table],
+        system_prompt=prompt.build_system_prompt(
+            problem, config.DESCRIPTOR_VERSION))
 
     transcript = []      # what the model would see
     evidence = []        # every tool actually called, in order
@@ -230,6 +232,7 @@ def run_case(case_id, problem=None, approve=None, verbose=False):
         "guardrails_fired": guards.fired,
         "stopped_by": stopped_by,
         "backend": backend.name,
+        "descriptor_version": config.DESCRIPTOR_VERSION,
     })
     return record
 

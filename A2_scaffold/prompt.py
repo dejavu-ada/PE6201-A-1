@@ -167,12 +167,34 @@ For a booking:
 
 
 def format_descriptor(d):
-    """One tool, as the model sees it.
+    """Render either the required six-field schema or the legacy schema.
 
-    The SIX FIELDS are all here. Note that `failure` gets its own line
-    and is not buried - it is the field that most changes behaviour and
-    the one teams most often leave as 'returns null'.
+    Problem B uses the explicit D2(b) fields. The legacy branch keeps
+    Problem A working until that module owner performs the same rewrite.
     """
+    if "name_signature" in d:
+        inputs = "\n".join(
+            "      %-16s %s" % (name, description)
+            for name, description in d["input"].items()
+        ) or "      (none)"
+        return (
+            "  NAME + SIGNATURE\n"
+            "    %s\n"
+            "  WHAT\n"
+            "    %s\n"
+            "  INPUT\n%s\n"
+            "  RETURNS\n"
+            "    %s\n"
+            "  FAILS WHEN\n"
+            "    %s\n"
+            "  IRREVERSIBLE?\n"
+            "    %s\n"
+            "  WHEN\n"
+            "    %s\n"
+            % (d["name_signature"], d["what"], inputs, d["returns"],
+               d["fails_when"], d["irreversible"], d.get("when", "Any time."))
+        )
+
     args = "\n".join("      %-16s %s" % (k, v) for k, v in d["args"].items())
     return ("  %s\n"
             "    purpose : %s\n"
@@ -184,7 +206,7 @@ def format_descriptor(d):
                d["returns"], d["failure"]))
 
 
-def build_system_prompt(problem=None):
+def build_system_prompt(problem=None, descriptor_version="v2"):
     """Assemble everything the model is told, once, before turn 1.
 
     THREE PARTS, and you should be able to say why each is there:
@@ -198,8 +220,9 @@ def build_system_prompt(problem=None):
     """
     problem = problem or config.PROBLEM
     names = sorted(tools.REGISTRY[problem])
-    described = [tools.DESCRIPTORS[n] for n in names if n in tools.DESCRIPTORS]
-    undescribed = [n for n in names if n not in tools.DESCRIPTORS]
+    descriptor_table = tools.DESCRIPTOR_SETS[descriptor_version]
+    described = [descriptor_table[n] for n in names if n in descriptor_table]
+    undescribed = [n for n in names if n not in descriptor_table]
 
     parts = [RULES[problem], "", "TOOLS AVAILABLE", ""]
     parts += [format_descriptor(d) for d in described]
@@ -216,7 +239,7 @@ def build_system_prompt(problem=None):
     return "\n".join(parts)
 
 
-def audit(problem=None):
+def audit(problem=None, descriptor_version="v2"):
     """Print the prompt, and what it cost you in tokens, and what is missing.
 
     Run this whenever you change a descriptor. The token count is the
@@ -224,13 +247,14 @@ def audit(problem=None):
     to earn that on every single turn of every single run.
     """
     problem = problem or config.PROBLEM
-    text = build_system_prompt(problem)
+    text = build_system_prompt(problem, descriptor_version)
     names = sorted(tools.REGISTRY[problem])
-    missing = [n for n in names if n not in tools.DESCRIPTORS]
+    descriptor_table = tools.DESCRIPTOR_SETS[descriptor_version]
+    missing = [n for n in names if n not in descriptor_table]
 
     print("=" * 68)
-    print("  SYSTEM PROMPT - Problem %s - what the model is told before turn 1"
-          % problem)
+    print("  SYSTEM PROMPT - Problem %s - descriptor %s"
+          % (problem, descriptor_version))
     print("=" * 68)
     print(text)
     print("=" * 68)

@@ -1,0 +1,80 @@
+{
+  "generated_at_utc": "2026-09-18T14:25:38.698702+00:00",
+  "problem": "B",
+  "model": "openai/gpt-5-mini",
+  "backend": "prompt_only",
+  "controlled_variables": {
+    "same_model": "openai/gpt-5-mini",
+    "same_cases": [
+      "REF-5590",
+      "REF-5602",
+      "REF-5614",
+      "REF-5620",
+      "REF-5631",
+      "REF-5645",
+      "REF-5658",
+      "REF-5663",
+      "REF-5671",
+      "REF-5684",
+      "REF-5697",
+      "REF-5703",
+      "REF-5711",
+      "REF-5725",
+      "REF-5738",
+      "REF-6103",
+      "REF-6104",
+      "REF-6105",
+      "REF-6106",
+      "REF-6107",
+      "REF-6201",
+      "REF-6202",
+      "REF-6203",
+      "REF-6204",
+      "REF-6205",
+      "REF-6211",
+      "REF-6212",
+      "REF-6213",
+      "REF-6214",
+      "REF-6215",
+      "REF-6221",
+      "REF-6222",
+      "REF-6223",
+      "REF-6224",
+      "REF-6225",
+      "REF-6231",
+      "REF-6232",
+      "REF-6233",
+      "REF-6234",
+      "REF-6235",
+      "REF-6241",
+      "REF-6242",
+      "REF-6243",
+      "REF-6244",
+      "REF-6245",
+      "REF-6251",
+      "REF-6252",
+      "REF-6253",
+      "REF-6254",
+      "REF-6255"
+    ],
+    "temperature": 0,
+    "versions": [
+      "v1",
+      "v2"
+    ]
+  },
+  "versions": {
+    "v1": {
+      "prompt": {
+        "characters": 8370,
+        "rough_tokens_chars_div_4": 2092
+      }
+    },
+    "v2": {
+      "prompt": {
+        "characters": 9297,
+        "rough_tokens_chars_div_4": 2324
+      }
+    }
+  }
+}

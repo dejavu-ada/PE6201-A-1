@@ -29,35 +29,28 @@ BACKEND = os.environ.get("A2_BACKEND", "scripted")  # "scripted" | "live"
 MODEL = os.environ.get("A2_MODEL", "openai/gpt-4o-mini")
 BASE_URL = "https://openrouter.ai/api/v1"
 
+# D5(b) price-band metadata. Model identity and family are derived from MODEL;
+# no member name or team-size field is needed in an experiment result.
+PRICE_TIER = os.environ.get("A2_PRICE_TIER", "cheap").strip().lower()
+if PRICE_TIER not in ("cheap", "mid", "frontier"):
+    raise ValueError("A2_PRICE_TIER must be 'cheap', 'mid' or 'frontier'")
+
 # D2(b) controlled experiment. The default submission path uses v2, while
 # DESCRIPTOR_VERSION=v1 selects the preserved baseline without editing code.
+
+# Set this to "sequential" or "parallel", then run:
+#     python run_eval.py
+# The model, prompt, descriptor and evaluation set stay unchanged; only
+# the tool-call scheduling mode changes.
+CALL_MODE = os.environ.get("A2_CALL_MODE", "parallel").strip().lower()
+if CALL_MODE == "serial":  # backward-compatible alias for older commands
+    CALL_MODE = "sequential"
+if CALL_MODE not in ("sequential", "parallel"):
+    raise ValueError("A2_CALL_MODE must be 'sequential' or 'parallel'")
+
 DESCRIPTOR_VERSION = os.environ.get("DESCRIPTOR_VERSION", "v2").lower()
 if DESCRIPTOR_VERSION not in ("v1", "v2"):
     raise ValueError("DESCRIPTOR_VERSION must be 'v1' or 'v2'")
-
-# ─────────────────────────────────────────────────────────────────────
-# EXECUTION MODE — Dependency-aware tool-call grouping (D2c).
-#
-#   PARALLEL_TOOLS = True    independent calls go together in one turn
-#                            Problem B example: check_referral_criteria
-#                            and lookup_patient share a turn because
-#                            neither needs the other's output.
-#
-#   PARALLEL_TOOLS = False   ONE call per turn — serial execution.
-#                            REF-5602 becomes 6 turns rather than 4.
-#
-# The dependency rule is enforced by your PROMPT, not by code: calls
-# that need earlier results (band → slots, referral → specialty, …)
-# can never be grouped, so toggling this flag only affects the
-# provably-independent batch points.
-# ─────────────────────────────────────────────────────────────────────
-_par_env = os.environ.get("PARALLEL_TOOLS", "").strip().lower()
-if _par_env in ("0", "false", "no", "seq", "sequential"):
-    PARALLEL_TOOLS = False
-elif _par_env in ("1", "true", "yes", "par", "parallel", ""):
-    PARALLEL_TOOLS = True               # default: the scaffold's normal mode
-else:
-    raise ValueError("PARALLEL_TOOLS must be 'true' or 'false'")
 
 # Your key never goes in this file. Put it in the environment:
 #     export OPENROUTER_API_KEY="sk-or-..."
@@ -75,7 +68,7 @@ PROBLEM = "B"
 # turns and your worst legitimate run is 7, a cap of 8 is defensible
 # and a cap of 30 is decoration.
 # ─────────────────────────────────────────────────────────────────────
-MAX_TURNS = 8 if PARALLEL_TOOLS else 16   # step cap (sequential doubles)
+MAX_TURNS = 8                 # step cap
 MAX_TOKENS_PER_RUN = 60000    # budget ceiling
 AUTONOMY = "confirm"          # "suggest" | "confirm" | "act"
 #   suggest  - the agent proposes; a human does everything
@@ -124,9 +117,28 @@ def data_root():
 # Checked against vendor pages 28 August 2026. RE-CHECK THEM: quoting a
 # price you did not verify is the kind of thing D6 is marked on.
 # ─────────────────────────────────────────────────────────────────────
-PRICE_IN = 0.10
-PRICE_OUT = 0.40
+PRICE_IN = 0.075
+PRICE_OUT = 0.20
 
+MONTHLY_VOLUME = 4000
+HUMAN_HOURLY_RATE = 55.0
+MINUTES_PER_ESCALATION = 10.0
+
+# D6 fixed-cost assumption. This is deliberately visible and editable: the
+# report must justify the team's own assumption rather than present it as a
+# fact. Default = 0.20 FTE operations time plus lightweight monitoring.
+FIXED_MONTHLY_COST = 2920.0
+SENSITIVITY_RANGE_PP = 10
+SENSITIVITY_STEP_PP = 2
+
+# D4 judgement checks are for prose fields, so a representative handful is
+# reviewed rather than pretending every fixed field needs human judgement.
+# The six cases cover act, ask, rule escalation, duplicate, no-slot and
+# hostile-free-text outcomes. Code checks still run on every trial.
+JUDGEMENT_CASES = (
+    "REF-5602", "REF-5614", "REF-5590",
+    "REF-5684", "REF-5697", "REF-5711",
+)
 
 def _stale_bytecode_warning():
     """Detect Python reusing an out-of-date __pycache__ copy of THIS file.
@@ -170,7 +182,9 @@ def summary():
     where = "FREE, deterministic" if BACKEND == "scripted" else "LIVE - this costs money"
     model = "(no model)" if BACKEND == "scripted" else MODEL
     line = ("BACKEND=%s  %s  |  PROBLEM=%s  |  model=%s  |  "
-            "descriptor=%s  |  PARALLEL_TOOLS=%s  |  cap=%d turns  |  autonomy=%s"
+            "descriptor=%s  |  call_mode=%s  |  cap=%d turns  |  autonomy=%s"
             % (BACKEND, where, PROBLEM, model, DESCRIPTOR_VERSION,
-               PARALLEL_TOOLS, MAX_TURNS, AUTONOMY))
+               CALL_MODE, MAX_TURNS, AUTONOMY))
+    if BACKEND == "live":
+        line += "  |  tier=%s" % PRICE_TIER
     return line + _stale_bytecode_warning()

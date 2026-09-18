@@ -1,0 +1,147 @@
+{
+  "backend": "scripted",
+  "problem": "B",
+  "call_mode": "parallel",
+  "method": "working agent -> delete one component -> restore it",
+  "all_recoveries_passed": true,
+  "failures": {
+    "F1": {
+      "failure": "action de-duplication deleted",
+      "layer": "code / loop control",
+      "case_id": "REF-5602",
+      "expected_observation": "redundant calls increase turns, tokens and cost; pass rate may hide it",
+      "before": {
+        "turns": 4,
+        "tool_calls": 6,
+        "tools_in_order": [
+          "get_referral",
+          "check_referral_criteria",
+          "lookup_patient",
+          "get_clinic_slots",
+          "get_clinic_slots",
+          "book_slot"
+        ],
+        "tokens_in": 21000,
+        "tokens_out": 600,
+        "cost_usd": 0.001695,
+        "decision": "book",
+        "stopped_by": null,
+        "code_check_pass": true,
+        "code_check_failures": []
+      },
+      "broken": {
+        "turns": 6,
+        "tool_calls": 10,
+        "tools_in_order": [
+          "get_referral",
+          "check_referral_criteria",
+          "lookup_patient",
+          "check_referral_criteria",
+          "lookup_patient",
+          "check_referral_criteria",
+          "lookup_patient",
+          "get_clinic_slots",
+          "get_clinic_slots",
+          "book_slot"
+        ],
+        "tokens_in": 37800,
+        "tokens_out": 840,
+        "cost_usd": 0.003003,
+        "decision": "book",
+        "stopped_by": null,
+        "code_check_pass": true,
+        "code_check_failures": []
+      },
+      "recovered": {
+        "turns": 4,
+        "tool_calls": 6,
+        "tools_in_order": [
+          "get_referral",
+          "check_referral_criteria",
+          "lookup_patient",
+          "get_clinic_slots",
+          "get_clinic_slots",
+          "book_slot"
+        ],
+        "tokens_in": 21000,
+        "tokens_out": 600,
+        "cost_usd": 0.001695,
+        "decision": "book",
+        "stopped_by": null,
+        "code_check_pass": true,
+        "code_check_failures": []
+      },
+      "recovery_pass": true,
+      "diagnosis": "Prompt advice cannot guarantee memory of completed actions; deterministic code-layer de-duplication is the correct fix."
+    },
+    "F2": {
+      "failure": "get_clinic_slots deleted from tool registry",
+      "layer": "tool interface / capability availability",
+      "case_id": "REF-5602",
+      "expected_observation": "the booking trajectory cannot continue because the required capability is out of reach",
+      "before": {
+        "turns": 4,
+        "tool_calls": 6,
+        "tools_in_order": [
+          "get_referral",
+          "check_referral_criteria",
+          "lookup_patient",
+          "get_clinic_slots",
+          "get_clinic_slots",
+          "book_slot"
+        ],
+        "tokens_in": 21000,
+        "tokens_out": 600,
+        "cost_usd": 0.001695,
+        "decision": "book",
+        "stopped_by": null,
+        "code_check_pass": true,
+        "code_check_failures": []
+      },
+      "broken": {
+        "turns": 3,
+        "tool_calls": 4,
+        "tools_in_order": [
+          "get_referral",
+          "check_referral_criteria",
+          "lookup_patient",
+          "get_clinic_slots"
+        ],
+        "tokens_in": 9000,
+        "tokens_out": 360,
+        "cost_usd": 0.000747,
+        "decision": "escalate",
+        "stopped_by": "tool_error",
+        "code_check_pass": false,
+        "code_check_failures": [
+          "decision 'escalate', expected 'book'",
+          "booked.clinic None, expected 'OPH-C2'",
+          "booked.date None, expected '2026-10-14'",
+          "booked.time None, expected '11:20'",
+          "book_slot called 0 times, expected exactly 1"
+        ]
+      },
+      "recovered": {
+        "turns": 4,
+        "tool_calls": 6,
+        "tools_in_order": [
+          "get_referral",
+          "check_referral_criteria",
+          "lookup_patient",
+          "get_clinic_slots",
+          "get_clinic_slots",
+          "book_slot"
+        ],
+        "tokens_in": 21000,
+        "tokens_out": 600,
+        "cost_usd": 0.001695,
+        "decision": "book",
+        "stopped_by": null,
+        "code_check_pass": true,
+        "code_check_failures": []
+      },
+      "recovery_pass": true,
+      "diagnosis": "A prompt or guardrail cannot execute a missing capability; restoring the tool interface is the correct fix."
+    }
+  }
+}

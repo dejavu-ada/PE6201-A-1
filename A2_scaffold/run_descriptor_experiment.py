@@ -7,12 +7,14 @@ records measured tokens, latency, turns, cost, and code-check pass rate.
 """
 import argparse
 import json
+import os
 import statistics
 from datetime import datetime, timezone
 
 import config
 import prompt
 from harness import load_cases, run_set
+from run_eval import RESULTS_DIR, _safe_name, _write_json
 
 
 VERSIONS = ("v1", "v2")
@@ -116,7 +118,9 @@ def main():
     parser.add_argument("cases", nargs="*", help="case ids; default is all")
     parser.add_argument("--prompt-only", action="store_true",
                         help="compare prompt sizes without calling a model")
-    parser.add_argument("--output", default="descriptor_experiment_results.json")
+    parser.add_argument(
+        "--output", default=None,
+        help="optional path; default uses the purpose-specific results folder")
     args = parser.parse_args()
 
     if not args.prompt_only and config.BACKEND != "live":
@@ -130,10 +134,21 @@ def main():
 
     case_ids = args.cases or load_cases(config.PROBLEM)
     output = run_experiment(case_ids, config.PROBLEM, args.prompt_only)
-    with open(args.output, "w", encoding="utf-8") as fh:
-        json.dump(output, fh, indent=2, ensure_ascii=False, default=str)
     print_summary(output)
-    print("wrote %s" % args.output)
+    if args.output:
+        with open(args.output, "w", encoding="utf-8") as fh:
+            json.dump(output, fh, indent=2, ensure_ascii=False, default=str)
+        print("wrote %s" % args.output)
+    else:
+        name = (
+            "d2b_descriptor_prompt_only.json"
+            if args.prompt_only
+            else "d2b_descriptor_experiment_%s.json"
+                 % _safe_name(config.MODEL)
+        )
+        path = os.path.join(RESULTS_DIR, name)
+        _write_json(path, output)
+        print("wrote results/%s" % name)
 
 
 if __name__ == "__main__":

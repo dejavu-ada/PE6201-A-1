@@ -17,18 +17,20 @@ The experiment changes only the descriptor version. Both arms use the same:
 Run:
 
 ```bash
-python run_descriptor_experiment.py --prompt-only \
-  --output descriptor_prompt_comparison.json
+python run_descriptor_experiment.py --prompt-only
 ```
 
 Current result:
 
 | Metric | v1 | v2 | Change |
 |---|---:|---:|---:|
-| Prompt characters | 8,118 | 8,513 | +395 (+4.9%) |
-| Rough prompt tokens (`chars / 4`) | 2,029 | 2,128 | +99 (+4.9%) |
+| Prompt characters | 8,922 | 11,270 | +2,348 (+26.3%) |
+| Rough prompt tokens (`chars / 4`) | 2,230 | 2,817 | +587 (+26.3%) |
 
-These are prompt-size estimates, not measured API usage.
+These are prompt-size estimates, not measured API usage. The v2 increase now
+includes the canonical five-value trigger enum, the mandatory evidence-rich
+`reason` contract discovered by the REF-5684 live smoke test, and the explicit
+no-empty-call/four-turn progression discovered by REF-5602.
 
 ## Required live comparison
 
@@ -39,15 +41,13 @@ the shell; never commit the key:
 $env:A2_BACKEND="live"
 $env:A2_MODEL="openai/gpt-4o-mini"
 $env:OPENROUTER_API_KEY="<set-locally>"
-python run_descriptor_experiment.py `
-  --output descriptor_experiment_results.json
+python run_descriptor_experiment.py
 ```
 
 For a small paid smoke test before the full battery:
 
 ```powershell
-python run_descriptor_experiment.py REF-5602 REF-5711 `
-  --output descriptor_experiment_smoke.json
+python run_descriptor_experiment.py REF-5602 REF-5711
 ```
 
 The runner saves every trial and summarises, for each version:
@@ -59,6 +59,10 @@ The runner saves every trial and summarises, for each version:
 - median turns; and
 - total model cost.
 
-Do not report the scripted backend's estimates or the static `chars / 4`
-number as measured token usage. Fill the final report table from the live JSON
-output and retain the numerator and denominator for every pass rate.
+By default prompt-only evidence is stored at
+`results/d2b_descriptor_prompt_only.json`; a dedicated live invocation is
+stored at `results/d2b_descriptor_experiment_<model>.json`. The ordinary
+`run_eval.py` workflow also creates
+`results/d2b_descriptor_comparison_<model>.json` after matching v1 and v2 runs
+exist. Pass `--output <path>` only when another export is explicitly needed.
+Do not report scripted estimates or `chars / 4` as measured token usage.

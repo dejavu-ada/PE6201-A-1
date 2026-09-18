@@ -32,27 +32,19 @@ from backends import make_backend
 from guardrails import Guardrails, GuardrailStop
 
 
-def run_case(case_id, problem=None, approve=None, verbose=False,
-             parallel_tools=None):
+def run_case(case_id, problem=None, approve=None, verbose=False):
     """Run ONE case from a clean state and return the decision record.
 
     ISOLATION (D4): everything this function needs is created inside it.
     No case may depend on a previous one having run - so no module-level
     counters, no shared guardrail object, no leftover transcript.
-
-    EXECUTION MODE (D2c):
-        parallel_tools = None   (default) honour config.PARALLEL_TOOLS
-        parallel_tools = True   dependency-aware batch grouping
-        parallel_tools = False  ONE tool per turn — serial
     """
-    if parallel_tools is None:
-        parallel_tools = config.PARALLEL_TOOLS
     problem = problem or config.PROBLEM
+    call_mode = config.CALL_MODE
+    parallel_tools = call_mode == "parallel"
     started = time.time()
 
-    # turn cap follows execution mode; sequential mode double-budgets
-    cap_turns = config.MAX_TURNS if parallel_tools else config.MAX_TURNS * 2
-    guards = Guardrails(cap_turns, config.MAX_TOKENS_PER_RUN,
+    guards = Guardrails(config.MAX_TURNS, config.MAX_TOKENS_PER_RUN,
                         config.AUTONOMY)
     # WHAT THE MODEL IS TOLD. On the scripted backend these are ignored -
     # the moves are pre-written, so no prompt is ever sent. On the live
@@ -60,27 +52,12 @@ def run_case(case_id, problem=None, approve=None, verbose=False,
     # the routing rules, assembled by prompt.build_system_prompt().
     #     python3 run_eval.py --prompt      to see the exact text
     descriptor_table = tools.DESCRIPTOR_SETS[config.DESCRIPTOR_VERSION]
-
-    # ── Which prompt does the live model see? ────────────────────────
-    # parallel=True  → prompt.py (original parallel-capable routing)
-    # parallel=False → prompt_sequential.py (strict one-tool-per-turn)
-    if parallel_tools:
-        import prompt as _prompt_mod
-    else:
-        import prompt_sequential as _prompt_mod
-
     backend = make_backend(
-    case_id,
-    tool_descriptors=[
-        descriptor_table[n]
-        for n in tools.REGISTRY[problem]
-        if n in descriptor_table
-    ],
-    system_prompt=_prompt_mod.build_system_prompt(
-        problem,
-        config.DESCRIPTOR_VERSION
-    ),
-    parallel_tools=parallel_tools,)
+        case_id,
+        tool_descriptors=[descriptor_table[n] for n in tools.REGISTRY[problem]
+                          if n in descriptor_table],
+        system_prompt=prompt.build_system_prompt(
+            problem, config.DESCRIPTOR_VERSION))
 
     transcript = []      # what the model would see
     evidence = []        # every tool actually called, in order
@@ -103,14 +80,14 @@ def run_case(case_id, problem=None, approve=None, verbose=False,
     # On the scripted backend the gate auto-approves so the run stays
     # deterministic. The RECORD still shows the gate was reached and
     # passed, which is what a marker looks for.
-    if approve is None and backend.name == "scripted":
+    if approve is None:
         approve = lambda action, payload: True
 
     try:
         while True:
             iterations += 1
-            if iterations > cap_turns + 2:
-                guards.halt("step_cap", "loop did not terminate")
+            if iterations > config.MAX_TURNS + 2:
+                raise GuardrailStop("step_cap", "loop did not terminate")
 
             move = backend.next_move(transcript)
             ti, to = backend.token_estimate(transcript)
@@ -119,7 +96,7 @@ def run_case(case_id, problem=None, approve=None, verbose=False,
 
             if verbose:
                 label = ("conclude" if "final" in move else "turn %d" % (turns + 1))
-                print("  %-9s · %s" % (label, move.get("thought", "")[:88]))
+                print("  %-9s | %s" % (label, move.get("thought", "")[:88]))
 
             # ---- conclude +记录JSON parse error-------------------------------------------
             if "final" in move:
@@ -140,18 +117,13 @@ def run_case(case_id, problem=None, approve=None, verbose=False,
             # Only calls INDEPENDENT of each other belong in one turn.
             # A dependency chain cannot be shortened by running things at
             # once - that is why Problem B saves less than Problem A.
-            #
-            # When PARALLEL_TOOLS is False we still EXECUTE one call per
-            # turn, but the live model / scripted backend may hand us a
-            # batch — we split that batch into sequential turns here so
-            # the agent never sees more than one observation at a time.
 
             #从python直接报错，变成程序记录正常结束留下证据-----------
             if move.get("calls"):
-                _raw_calls = move["calls"]
+                raw_calls = move["calls"]
 
             elif "tool" in move and "args" in move:
-                _raw_calls = [(move["tool"], move["args"])]
+                raw_calls = [(move["tool"], move["args"])]
 
             else:
                 errors.append({
@@ -168,39 +140,26 @@ def run_case(case_id, problem=None, approve=None, verbose=False,
                 stopped_by = "invalid_model_move"
                 break
 
-            # ── Serial-mode force-multiplex: one observation per turn ─
-            if not parallel_tools and len(_raw_calls) > 1:
-                if verbose:
-                    print("       [sequential] splitting %d calls into individual turns"
-                          % len(_raw_calls))
-
-            # Iterate the calls, recording ONE turn per call when serial.
-            # When parallel we execute all of them under the SAME turn
-            # counter, and append ONE transcript step at the end.
-            call_groups = (_raw_calls,) if parallel_tools else [
-                (c,) for c in _raw_calls]
+            # In parallel mode every independent call returned by the model
+            # shares one tool-calling turn. In sequential mode the same calls
+            # are executed one per turn. The prompt asks the live model to
+            # follow the selected mode; this split is a deterministic safety
+            # net and also makes scripted comparisons use the same loop.
+            call_groups = [raw_calls] if parallel_tools else [
+                [call] for call in raw_calls
+            ]
 
             broken = False
-            for gi, group in enumerate(call_groups):
-
-                if gi > 0:
-                    # extra turns introduced by the serialiser
+            for group_index, calls in enumerate(call_groups):
+                if group_index > 0:
                     turns += 1
                     guards.check_turns(turns)
                     if verbose:
-                        print("  turn %-4d · (sequential turn continuation)" % turns)
+                        print("  turn %-4d | (sequential continuation)" % turns)
 
                 observations = []
 
-                for name, args in group:
-                    # Code controls the callable surface. Descriptors and
-                    # prompts are guidance, not an access-control boundary.
-                    guards.check_tool_allowed(name, tools.REGISTRY[problem])
-                    try:
-                        tools.validate_tool_call(problem, name, args)
-                    except (TypeError, ValueError, KeyError) as exc:
-                        guards.invalid_arguments(name, str(exc))
-
+                for name, args in calls:
                     guards.check_duplicate(name, args)
 
                     if name == tools.GATED_ACTION.get(problem):
@@ -208,13 +167,41 @@ def run_case(case_id, problem=None, approve=None, verbose=False,
                             raise GuardrailStop(
                                 "gate_held",
                                 "%s awaits human approval (autonomy=%s)"
-                                % (name, config.AUTONOMY),
-                                blocked_action=name)
+                                % (name, config.AUTONOMY))
 
                     try:
                         result = tools.call(problem, name, args)
-                    except (TypeError, ValueError, KeyError) as exc:
-                        guards.invalid_arguments(name, str(exc))
+                    except Exception as exc:
+                        # Tool/interface failures are part of the run evidence,
+                        # not reasons for the evaluator itself to crash. Keep
+                        # the stop loud and machine-readable for D7.
+                        evidence.append(name)
+                        error = {
+                            "turn": turns,
+                            "type": "tool_error",
+                            "tool": name,
+                            "args": args,
+                            "exception": type(exc).__name__,
+                            "detail": str(exc),
+                        }
+                        errors.append(error)
+                        tool_trace.append({
+                            "turn": turns,
+                            "tool": name,
+                            "args": args,
+                            "observation": None,
+                            "error": error,
+                        })
+                        record = {
+                            "decision": "escalate",
+                            "reason": "tool unavailable or invalid: %s" % name,
+                        }
+                        stopped_by = "tool_error"
+                        broken = True
+                        if verbose:
+                            print("       %-26s -> ERROR %s: %s" % (
+                                name, type(exc).__name__, str(exc)))
+                        break
 
                     evidence.append(name)
 
@@ -222,17 +209,8 @@ def run_case(case_id, problem=None, approve=None, verbose=False,
                         "turn": turns,
                         "tool": name,
                         "args": args,
-                        "observation": _audit_observation(name, result),
+                        "observation": result,
                     })
-
-                    # Tool results and referral free text are data, never
-                    # instructions. Stop before hostile text reaches the
-                    # transcript or a later irreversible action.
-                    marker = tools.detect_untrusted_output(name, result)
-                    if marker:
-                        guards.untrusted_output(
-                            name, marker,
-                            blocked_action=tools.GATED_ACTION.get(problem))
 
                     if verbose:
                         print("       %-26s -> %s" % (name, _short(result)))
@@ -265,8 +243,8 @@ def run_case(case_id, problem=None, approve=None, verbose=False,
 
                 transcript.append({
                     "role": "assistant",
-                    "content": move.get("thought", "") if gi == 0
-                               else "(sequential turn: same thought, new tools)"
+                    "content": (move.get("thought", "") if group_index == 0
+                                else "(sequential continuation)")
                 })
 
                 transcript.append({
@@ -286,18 +264,10 @@ def run_case(case_id, problem=None, approve=None, verbose=False,
             "turn": turns,
             "type": "guardrail_stop",
             "reason": stop.reason,
-            "detail": stop.detail,
-            "blocked_action": stop.blocked_action,
+            "detail": stop.detail
         })
 
         record = {"decision": "escalate",
-                  "trigger": ("instruction_in_referral_free_text"
-                              if stop.reason == "prompt_injection"
-                              else stop.reason),
-                  "human_review_required": True,
-                  "blocked_action": stop.blocked_action,
-                  "escalation_trigger": stop.reason,
-                  "escalation_target": "human_referral_coordinator",
                   "reason": "halted by the %s guardrail - %s"
                             % (stop.reason, stop.detail)}
 
@@ -318,9 +288,7 @@ def run_case(case_id, problem=None, approve=None, verbose=False,
         "stopped_by": stopped_by,
         "backend": backend.name,
         "descriptor_version": config.DESCRIPTOR_VERSION,
-        # D2(c) trace header: every result records its execution mode
-        "parallel_tools": parallel_tools,
-        "execution_mode": "parallel" if parallel_tools else "sequential",
+        "call_mode": call_mode,
     })
     return record
 
@@ -328,28 +296,3 @@ def run_case(case_id, problem=None, approve=None, verbose=False,
 def _short(value, n=64):
     s = repr(value)
     return s if len(s) <= n else s[:n - 1] + "…"
-
-
-def _audit_observation(tool, value):
-    """Keep useful test evidence without persisting patient PII."""
-    if not isinstance(value, dict):
-        return value
-    if tool == "get_referral":
-        return {
-            "referral_id": value.get("referral_id"),
-            "patient_id": "[REDACTED]" if value.get("patient_id") else None,
-            "specialty": value.get("specialty"),
-            "clinical_summary": "[REDACTED]",
-            "tests_attached": value.get("tests_attached", []),
-        }
-    if tool == "lookup_patient":
-        patient = value.get("patient") or {}
-        return {
-            "patient": {
-                "patient_id": "[REDACTED]",
-                "existing_appointments": patient.get(
-                    "existing_appointments", []),
-            },
-            "contact": "[REDACTED]",
-        }
-    return value

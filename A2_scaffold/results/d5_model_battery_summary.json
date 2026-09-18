@@ -1,0 +1,9 @@
+{
+  "schema_version": "experiment-result-1.0",
+  "experiment": "D5(b) live model battery",
+  "generated_at_utc": "2026-09-18T14:02:22.467846+00:00",
+  "expected_live_models": 6,
+  "v1_models_recorded": [],
+  "comparisons_by_call_mode": {},
+  "source_result_files": []
+}

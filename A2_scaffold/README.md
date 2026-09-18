@@ -1,210 +1,149 @@
-# PE6201 · A2 — starter scaffold
+# PE6201 A2 - Problem B
 
-A working single-agent ReAct loop, a tool layer, a guardrail layer, an evaluation
-harness and both graders. It runs, out of the box, with no key and no network.
+Single-agent referral coordination with a hand-written ReAct loop, local
+fixture tools, four code guardrails, scripted/live backends, controlled
+experiments and purpose-specific JSON evidence.
 
-**It is a starting point, not a solution.** It handles two cases — one per problem —
-and stops. Everything it does is something you will replace with your own design.
+## Main command
 
-**Start with the notebook for your problem** (`A2_Scaffold_Tour_ProblemA.ipynb` or
-`…ProblemB.ipynb`) — it walks the whole machine on one case, with every value printed.
-Then work in the modules.
+Edit `config.py`, then run:
 
----
-
-## Run it
-
-```bash
-cd A2_scaffold
-python3 run_eval.py REF-5602          # one case, every turn shown
-python3 run_eval.py                   # the scripted cases, graded
-python3 demo_loop_failure.py          # the D7 method, worked once
-python3 run_eval.py --prompt          # exactly what the model is told
-
-python3 run_eval.py CLM-8842          # Problem A, once PROBLEM = "A" in config.py
+```powershell
+python run_eval.py
 ```
 
-No arguments needed, no packages to install, no network, no API key. Standard
-library only. If any of that is not true on your machine, tell me — the whole
-point of the scripted backend is that it works everywhere.
+The committed default is `BACKEND = "scripted"`, so a marker can reproduce
+D4/D5(a) without a network or API key.
 
-**If you change `PROBLEM` and nothing happens**, Python is reusing stale bytecode —
-`"B"` → `"A"` is the same file size, so its cache check can miss the edit. The scaffold
-detects this and prints a loud warning; the fix is `rm -rf __pycache__`, or restart the
-kernel in a notebook. (This bit us while building the scaffold, which is why there is a
-guard for it.)
+## Live model run for each team member
 
-**It expects `A2_reference_data/` to sit next to this folder.** If yours is
-elsewhere: `export A2_DATA=/path/to/A2_reference_data`. It fails with instructions
-rather than guessing.
+Each member sets these fields before running their assigned model:
 
----
-
-## What is here
-
-| File | What it is | Will you change it? |
-|---|---|---|
-| `config.py` | The vendor-neutral block: `BACKEND`, `MODEL`, `BASE_URL`, guardrail limits, which problem | **Yes** — this is the first file to open |
-| `tools.py` | The tool layer over the reference data, with six-field descriptors | **Yes, heavily** — this is D2 |
-| `backends.py` | The scripted backend and the live one. One function knows a vendor exists | **Yes** — you add a script per case |
-| `agent.py` | The ReAct loop, instrumented | Some — but read every line first |
-| `guardrails.py` | Step cap · budget ceiling · de-duplication · autonomy gate | Some — the limits are yours to set |
-| `harness.py` | Load, run, code check, judgement queue, report | Some |
-| `prompt.py` | Assembles the descriptors + routing rules into the text the model is sent | **Yes** — this is D2(b) |
-| `run_eval.py` | Entry point. **This is what a marker runs** | Rarely |
-| `demo_loop_failure.py` | D7's method, worked once on the scripted backend | Copy the method |
-| `A2_Scaffold_Tour_ProblemA.ipynb` | Guided walk-through of one claim, `CLM-8842` | Read once |
-| `A2_Scaffold_Tour_ProblemB.ipynb` | Guided walk-through of one referral, `REF-5602` | Read once |
-
----
-
-## The two notebooks — start here
-
-**Open the one for the problem you chose. You do not need the other.**
-
-| | Case | What it walks through |
-|---|---|---|
-| `A2_Scaffold_Tour_ProblemA.ipynb` | `CLM-8842` — the partly-payable claim from Appendix A | three lines, one excluded, one needing a pre-authorisation |
-| `A2_Scaffold_Tour_ProblemB.ipynb` | `REF-5602` — the booking from Appendix A | four gates, an urgency window, a slot search |
-
-### What they are for
-
-**To show you the whole machine working on one case before you change any of it.** Eleven
-short steps, in the order the machine runs: what the agent is handed → what it has to
-fetch → the run, turn by turn → the decision record → the code check → the judgement
-check → a failure that raises no exception.
-
-Every value printed is real. Wherever a cell hard-codes something — `'OPH'`, `'M-2214'`,
-`'POL-3310'` — the markdown says which earlier cell it came from, so nothing appears by
-magic.
-
-**The model is simulated; the data is not.** The backend replays a fixed sequence of moves
-from `backends.py`, so the run is deterministic and free. The tools underneath do genuine
-lookups against the shipped JSON. Only the model's decisions are scripted.
-
-**Each notebook has a "trap" cell** — the mistake that costs teams the case, made visible:
-
-- **Problem B, cell 4** lists every OPH slot and marks three that are inside the window
-  and free but in the **wrong band**. Filter by date alone and you book one of them.
-- **Problem A, cell 5** runs four duplicate-matching strategies and shows that every
-  shortcut wrongly escalates a perfectly good claim — including this one.
-
-### What they are not
-
-**They contain no logic of their own.** Every cell imports from the `.py` files. That is
-deliberate, and it is the habit to copy:
-
-> **Notebooks explore. Modules ship.**
-
-Six people can edit six modules at once. Six people editing one notebook produces merge
-conflicts and an unreadable diff — and section 8 of the brief leans on your commit history
-to corroborate `CONTRIBUTIONS.md`.
-
-**They are not what you submit.** D5(a) says a marker clones your repository and reproduces
-your numbers. `python3 run_eval.py` is that; a notebook is not. Read the tour once, then
-work in the modules.
-
-### Running them in Colab
-
-Upload `A2_scaffold/` and `A2_reference_data/` to the same folder in your Drive, then edit
-the two paths in the setup cell. Locally, run the cells in order — no setup needed.
-
----
-
-## The five ideas it exists to show
-
-**1 · The agent never sees the data.** It asks a tool a question and gets one fact
-back. An agent handed all the data in its first prompt is making a single call, not
-running a loop — and D0(a) asks which rung of the Class 4 ladder you are actually
-on.
-
-**2 · `BACKEND = "scripted"` is the default, and must stay that way in what you
-submit.** A marker clones your repository and runs `python3 run_eval.py`. If your
-numbers do not come back, D5(a) has failed and Technical Execution is capped. Only
-D5(b) — the live model battery — costs money. D3(b), D5(a) and D7 all run scripted.
-
-**3 · Turns are decided by the data, not by you.** `requires_preauth` decides
-whether Problem A makes another call. A red flag ends a Problem B run before a slot
-is ever queried. You did not write those branches; the record did.
-
-**4 · Only independent calls fold into one turn.** `REF-5602` is 6 calls in 4
-turns. `CLM-8842` is 8 calls in 4 turns. Both match Appendix A exactly — check
-them. A dependency chain cannot be shortened by running things at once, which is
-why Problem B saves 36% and Problem A saves 54%.
-
-**5 · Instrumentation is not optional.** Every run records turns, tokens, cost,
-every tool call and every guardrail event. D6's cost model and D7's loop failure
-both need numbers captured *while the run happened*. Add instrumentation afterwards
-and you re-run the whole battery.
-
----
-
-## Your first hour
-
-1. **Open the tour notebook for your problem** and run it top to bottom. Fifteen minutes,
-   and you will have seen the whole machine on one case.
-2. **Open `config.py`** and set `PROBLEM` to the one you chose.
-3. **`python3 run_eval.py`** — the same case, graded, from the command line. This is what
-   a marker runs.
-4. **`python3 run_eval.py --prompt`** — read the exact text the model is sent, and
-   its token cost. It is assembled from the descriptors in `tools.py`, so editing one
-   changes what the agent sees. Write deliberately worse ones — that is your D2(b)
-   **v1**, and the measured comparison is the deliverable.
-5. **Open `backends.py`** and script a second case yourself. If you cannot write the
-   steps down, you do not yet understand the case. Better to find that out now.
-
----
-
-## Team v2 implementation status
-
-The original scaffold notes below describe what was initially left for the
-assignment. This merged team version now contains 50 Problem B cases, v1/v2
-descriptors, parallel/sequential experiments, and a 15-case D3 guardrail
-battery. For the current B2 status and exact commands, read:
-
-- `B2_MERGE_CHANGES.md`
-- `D3_GUARDRAIL_CHECKLIST.md`
-- `D3_REPORT_DRAFT.md`
-
-Run the completed safety battery with:
-
-```bash
-python3 run_guardrails.py --verbose
+```python
+BACKEND = "live"
+MODEL = "openai/gpt-4o-mini"
+PRICE_TIER = "cheap"                 # cheap | mid | frontier
+PRICE_IN = 0.10                       # current USD per 1M input tokens
+PRICE_OUT = 0.40                      # current USD per 1M output tokens
+CALL_MODE = "parallel"               # identical across the D5 battery
+DESCRIPTOR_VERSION = "v2"
 ```
 
----
+Keep the key outside the repository:
 
-## What the original scaffold deliberately did not do
+```powershell
+$env:OPENROUTER_API_KEY = "your-key"
+python run_eval.py
+```
 
-Left undone on purpose. Doing them is the assignment.
+The output is named from the model, for example:
 
-- **Only two cases are scripted.** Your set needs 30–50. See
-  `PE6201_A2_Adding_Extra_Cases.pdf`.
-- **The judgement check is a queue, not a verdict.** `must_record` items are written
-  in English; a substring match would be theatre. A person — or a second model —
-  rules on each. If you automate it with a model, say so: a model grading a model is
-  a claim that needs defending.
-- **The live backend counts no tokens.** It returns zeros, on purpose. Wire in the
-  usage numbers the API gives you. Estimating and calling it measured is what D6
-  punishes.
-- **The tool set is minimal and the names are ours.** Rename, merge, split, add. The
-  routing rule and the gated action are the only fixed things.
-- **The guardrail checklist is not written.** D3(b) wants ten cases, at least three
-  of them hostile free text. The layer they test is in `guardrails.py`.
-- **The prompt is a starting point, not a good one.** `prompt.py` assembles the
-  descriptors and routing rules into what the model is sent — run `--prompt` to read
-  it. Rewriting it, and measuring v1 against v2 on a fixed model, is D2(b). Note that
-  comparison needs LIVE runs: the scripted backend never consults a model, so it never
-  reads the prompt.
+```text
+results/results_openai_gpt_4o_mini.json
+results/results_anthropic_claude_sonnet_4.json
+results/results_google_gemini_2_5_flash.json
+```
 
----
+Put all model result files in the same `results/` folder and run the no-cost
+refresh command to rebuild `d5_model_battery_summary.json`. Results contain
+no member names or team-size metadata; the model family is derived from the
+model slug, and the battery target is six v2 live models:
 
-## Before you submit
+```powershell
+python run_eval.py --refresh
+```
 
-- `python3 run_eval.py` works **in a fresh clone**, on a machine with no key. Test
-  it that way — "works on my laptop" has caught out every cohort.
-- `BACKEND = "scripted"` is the committed default.
-- `results.json` is committed, and your report's numbers come from it.
-- Your extended `expected_outcomes_*.json` is committed. **A pass rate submitted
-  without the key it was measured against is not a measurement.**
-- Every pass rate in the report carries its trial count.
+`backends.py` reads measured input/output token usage from the live API.
+Scripted counts are explicitly labelled estimates.
+
+## Controlled experiments
+
+### D2(b) descriptor v1 versus v2
+
+Use the same live model, cases and `CALL_MODE`:
+
+1. Set `DESCRIPTOR_VERSION = "v1"`; run `python run_eval.py`.
+2. Set `DESCRIPTOR_VERSION = "v2"`; run `python run_eval.py`.
+
+Both raw arms remain in that model's `results_<model>.json`; the derived
+comparison is written as:
+
+```text
+results/d2b_descriptor_comparison_<model>.json
+```
+
+Free prompt-size evidence:
+
+```powershell
+python run_descriptor_experiment.py --prompt-only
+```
+
+Output: `results/d2b_descriptor_prompt_only.json`.
+
+### D2(c) sequential versus parallel
+
+Keep model, cases, prompt, descriptor and prices unchanged:
+
+1. Set `CALL_MODE = "sequential"`; run `python run_eval.py`.
+2. Set `CALL_MODE = "parallel"`; run `python run_eval.py`.
+
+Raw trials stay in the model result file; the controlled comparison is:
+
+```text
+results/d2c_sequential_parallel_<model>_<descriptor>.json
+```
+
+### D3, D7 and checks
+
+```powershell
+python ..\A2_reference_data\check_my_data.py
+python run_guardrail_checklist.py
+python demo_loop_failure.py
+python -m unittest -v test_poka_yoke.py
+```
+
+## Result files by purpose
+
+| Result file | Purpose |
+|---|---|
+| `results/d4_d5a_scripted_results.json` | Reproducible 50-case/70-trial scripted baseline |
+| `results/results_<model>.json` | One member's complete live-model trials, including any v1/v2 and sequential/parallel arms run on that model |
+| `results/d2b_descriptor_prompt_only.json` | Free static v1/v2 prompt-size evidence |
+| `results/d2b_descriptor_comparison_<model>.json` | Same-model measured v1/v2 comparison |
+| `results/d2c_sequential_parallel_<model>_<version>.json` | Same-model sequential/parallel comparison |
+| `results/d3_guardrail_results.json` | Ten scripted guardrail cases, including three hostile free-text cases |
+| `results/d5_model_battery_summary.json` | Cross-model v2 table and rule checks |
+| `results/d6_cost_analysis_<model>.json` | Three-layer cost, sensitivity and break-even for one model |
+| `results/d7_failure_results.json` | Two deletion failures with before/broken/recovered evidence |
+
+`bookings.jsonl` is not an experiment result. It is the append-only local
+ledger for the gated irreversible booking action.
+
+## D0-D7 code map
+
+| Requirement | File and exact part |
+|---|---|
+| D0 boundary / why an agent | Report work; code evidence is the variable-length `agent.py::run_case` loop |
+| D1 hand-built single-agent loop | `agent.py::run_case` |
+| D2(a) tools and interfaces | `tools.py::REGISTRY`, Problem B tool functions, `DESCRIPTORS_V2` |
+| D2(b) descriptor rewrite | `tools.py::DESCRIPTORS_V1/V2`, `prompt.py::build_system_prompt`, `run_descriptor_experiment.py`, `run_eval.py::_d2b_comparison` |
+| D2(c) execution mode | `config.py::CALL_MODE`, `prompt.py::calling_rule`, `agent.py::run_case`, `run_eval.py::_d2c_comparison` |
+| D3(a) four controls | `guardrails.py::Guardrails`; gate runs immediately before `book_slot` |
+| D3(b) checklist | `run_guardrail_checklist.py::CASES` |
+| D4 cases and graders | `make_fixtures_B.py`, `expected_outcomes_B.json`, `harness.py::run_set/code_check/prepare_judgement_check/report` |
+| D5(a) reproducible run | `backends.py::ScriptedBackend`, scripted default in `config.py`, `run_eval.py` |
+| D5(b) model battery | `backends.py::LiveBackend/_live_call`, metadata in `config.py`, `run_eval.py::_refresh_d5_model_battery` |
+| D6 economics | measured usage in `backends.py`, instrumentation in `agent.py`, calculations in `harness.py::report`, export in `run_eval.py::_d6_cost_analysis` |
+| D7 failures | `demo_loop_failure.py::reproduce_dedup_failure/reproduce_missing_tool_failure` |
+
+## Other commands
+
+```powershell
+python run_eval.py REF-5602     # one case with every turn displayed
+python run_eval.py --prompt     # exact selected prompt/descriptors
+python run_eval.py --judge      # grade the selected model/version/mode queue
+python run_eval.py --refresh    # rebuild comparisons; makes no model calls
+```
+
+The extended set contains 50 labelled cases: 40 ordinary cases run once and
+10 negative cases run three times, giving 70 trials per model/configuration.

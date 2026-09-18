@@ -1,0 +1,263 @@
+{
+  "schema_version": "experiment-result-1.0",
+  "experiment": "D2(c) sequential versus parallel tool calling",
+  "generated_at_utc": "2026-09-18T14:02:22.430002+00:00",
+  "identity": {
+    "backend": "scripted",
+    "model": "scripted",
+    "problem": "B"
+  },
+  "descriptor_version": "v2",
+  "controlled_variables": {
+    "same_model": true,
+    "same_evaluation_set": true,
+    "same_prompt_and_descriptor": true,
+    "only_changed_variable": "call_mode"
+  },
+  "sequential": {
+    "cases": 50,
+    "trials": 70,
+    "passed": 70,
+    "pass_rate": 1.0,
+    "ordinary_trials": 40,
+    "ordinary_passed": 40,
+    "ordinary_pass_rate": 1.0,
+    "negative_cases": 10,
+    "negative_trials": 30,
+    "negative_passed": 30,
+    "negative_pass_rate": 1.0,
+    "median_turns": 5.0,
+    "worst_case_turns": 6,
+    "tokens_in": 1312200,
+    "tokens_out": 35160,
+    "cost_usd": 0.145284,
+    "seconds": 0.015,
+    "step_cap_hits": 0,
+    "token_source": "scripted_estimate_not_for_live_cost_claims",
+    "economics": {
+      "formula": "token_cost + (1-pass_rate)*failure_cost",
+      "token_cost_per_case": 0.002075485714285714,
+      "failure_cost_usd": 9.17,
+      "expected_failure_cost_per_case": 0.0,
+      "expected_variable_cost_per_case": 0.002075485714285714,
+      "monthly_volume": 4000,
+      "variable_monthly_cost": 8.301942857142857,
+      "fixed_monthly_cost": 2920.0,
+      "total_monthly_cost": 2928.301942857143,
+      "average_full_cost_per_case": 0.7320754857142857,
+      "break_even_pass_rate_vs_human": 0.07983374980526561,
+      "break_even_monthly_volume": 318.50174981807226,
+      "sensitivity": [
+        {
+          "delta_percentage_points": -10,
+          "pass_rate": 0.9,
+          "expected_variable_cost_per_case": 0.9190754857142855,
+          "total_monthly_cost": 6596.301942857142,
+          "average_full_cost_per_case": 1.6490754857142855
+        },
+        {
+          "delta_percentage_points": -8,
+          "pass_rate": 0.92,
+          "expected_variable_cost_per_case": 0.7356754857142853,
+          "total_monthly_cost": 5862.701942857141,
+          "average_full_cost_per_case": 1.4656754857142853
+        },
+        {
+          "delta_percentage_points": -6,
+          "pass_rate": 0.94,
+          "expected_variable_cost_per_case": 0.5522754857142862,
+          "total_monthly_cost": 5129.101942857145,
+          "average_full_cost_per_case": 1.2822754857142864
+        },
+        {
+          "delta_percentage_points": -4,
+          "pass_rate": 0.96,
+          "expected_variable_cost_per_case": 0.3688754857142861,
+          "total_monthly_cost": 4395.501942857144,
+          "average_full_cost_per_case": 1.098875485714286
+        },
+        {
+          "delta_percentage_points": -2,
+          "pass_rate": 0.98,
+          "expected_variable_cost_per_case": 0.18547548571428588,
+          "total_monthly_cost": 3661.9019428571437,
+          "average_full_cost_per_case": 0.9154754857142859
+        },
+        {
+          "delta_percentage_points": 0,
+          "pass_rate": 1.0,
+          "expected_variable_cost_per_case": 0.002075485714285714,
+          "total_monthly_cost": 2928.301942857143,
+          "average_full_cost_per_case": 0.7320754857142857
+        },
+        {
+          "delta_percentage_points": 2,
+          "pass_rate": 1.0,
+          "expected_variable_cost_per_case": 0.002075485714285714,
+          "total_monthly_cost": 2928.301942857143,
+          "average_full_cost_per_case": 0.7320754857142857
+        },
+        {
+          "delta_percentage_points": 4,
+          "pass_rate": 1.0,
+          "expected_variable_cost_per_case": 0.002075485714285714,
+          "total_monthly_cost": 2928.301942857143,
+          "average_full_cost_per_case": 0.7320754857142857
+        },
+        {
+          "delta_percentage_points": 6,
+          "pass_rate": 1.0,
+          "expected_variable_cost_per_case": 0.002075485714285714,
+          "total_monthly_cost": 2928.301942857143,
+          "average_full_cost_per_case": 0.7320754857142857
+        },
+        {
+          "delta_percentage_points": 8,
+          "pass_rate": 1.0,
+          "expected_variable_cost_per_case": 0.002075485714285714,
+          "total_monthly_cost": 2928.301942857143,
+          "average_full_cost_per_case": 0.7320754857142857
+        },
+        {
+          "delta_percentage_points": 10,
+          "pass_rate": 1.0,
+          "expected_variable_cost_per_case": 0.002075485714285714,
+          "total_monthly_cost": 2928.301942857143,
+          "average_full_cost_per_case": 0.7320754857142857
+        }
+      ]
+    },
+    "step_reliability": 1.0
+  },
+  "parallel": {
+    "cases": 50,
+    "trials": 70,
+    "passed": 70,
+    "pass_rate": 1.0,
+    "ordinary_trials": 40,
+    "ordinary_passed": 40,
+    "ordinary_pass_rate": 1.0,
+    "negative_cases": 10,
+    "negative_trials": 30,
+    "negative_passed": 30,
+    "negative_pass_rate": 1.0,
+    "median_turns": 4.0,
+    "worst_case_turns": 4,
+    "tokens_in": 1126200,
+    "tokens_out": 35160,
+    "cost_usd": 0.126684,
+    "seconds": 0.012,
+    "step_cap_hits": 0,
+    "token_source": "scripted_estimate_not_for_live_cost_claims",
+    "economics": {
+      "formula": "token_cost + (1-pass_rate)*failure_cost",
+      "token_cost_per_case": 0.0018097714285714285,
+      "failure_cost_usd": 9.17,
+      "expected_failure_cost_per_case": 0.0,
+      "expected_variable_cost_per_case": 0.0018097714285714285,
+      "monthly_volume": 4000,
+      "variable_monthly_cost": 7.239085714285714,
+      "fixed_monthly_cost": 2920.0,
+      "total_monthly_cost": 2927.239085714286,
+      "average_full_cost_per_case": 0.7318097714285715,
+      "break_even_pass_rate_vs_human": 0.079804773329179,
+      "break_even_monthly_volume": 318.49251893794855,
+      "sensitivity": [
+        {
+          "delta_percentage_points": -10,
+          "pass_rate": 0.9,
+          "expected_variable_cost_per_case": 0.9188097714285712,
+          "total_monthly_cost": 6595.2390857142855,
+          "average_full_cost_per_case": 1.6488097714285714
+        },
+        {
+          "delta_percentage_points": -8,
+          "pass_rate": 0.92,
+          "expected_variable_cost_per_case": 0.735409771428571,
+          "total_monthly_cost": 5861.639085714284,
+          "average_full_cost_per_case": 1.465409771428571
+        },
+        {
+          "delta_percentage_points": -6,
+          "pass_rate": 0.94,
+          "expected_variable_cost_per_case": 0.5520097714285719,
+          "total_monthly_cost": 5128.0390857142875,
+          "average_full_cost_per_case": 1.2820097714285719
+        },
+        {
+          "delta_percentage_points": -4,
+          "pass_rate": 0.96,
+          "expected_variable_cost_per_case": 0.36860977142857176,
+          "total_monthly_cost": 4394.439085714287,
+          "average_full_cost_per_case": 1.0986097714285719
+        },
+        {
+          "delta_percentage_points": -2,
+          "pass_rate": 0.98,
+          "expected_variable_cost_per_case": 0.1852097714285716,
+          "total_monthly_cost": 3660.8390857142863,
+          "average_full_cost_per_case": 0.9152097714285715
+        },
+        {
+          "delta_percentage_points": 0,
+          "pass_rate": 1.0,
+          "expected_variable_cost_per_case": 0.0018097714285714285,
+          "total_monthly_cost": 2927.239085714286,
+          "average_full_cost_per_case": 0.7318097714285715
+        },
+        {
+          "delta_percentage_points": 2,
+          "pass_rate": 1.0,
+          "expected_variable_cost_per_case": 0.0018097714285714285,
+          "total_monthly_cost": 2927.239085714286,
+          "average_full_cost_per_case": 0.7318097714285715
+        },
+        {
+          "delta_percentage_points": 4,
+          "pass_rate": 1.0,
+          "expected_variable_cost_per_case": 0.0018097714285714285,
+          "total_monthly_cost": 2927.239085714286,
+          "average_full_cost_per_case": 0.7318097714285715
+        },
+        {
+          "delta_percentage_points": 6,
+          "pass_rate": 1.0,
+          "expected_variable_cost_per_case": 0.0018097714285714285,
+          "total_monthly_cost": 2927.239085714286,
+          "average_full_cost_per_case": 0.7318097714285715
+        },
+        {
+          "delta_percentage_points": 8,
+          "pass_rate": 1.0,
+          "expected_variable_cost_per_case": 0.0018097714285714285,
+          "total_monthly_cost": 2927.239085714286,
+          "average_full_cost_per_case": 0.7318097714285715
+        },
+        {
+          "delta_percentage_points": 10,
+          "pass_rate": 1.0,
+          "expected_variable_cost_per_case": 0.0018097714285714285,
+          "total_monthly_cost": 2927.239085714286,
+          "average_full_cost_per_case": 0.7318097714285715
+        }
+      ]
+    },
+    "step_reliability": 1.0
+  },
+  "delta_parallel_minus_sequential": {
+    "trials": 0,
+    "passed": 0,
+    "pass_rate": 0.0,
+    "negative_pass_rate": 0.0,
+    "median_turns": -1.0,
+    "worst_case_turns": -2,
+    "tokens_in": -186000,
+    "tokens_out": 0,
+    "cost_usd": -0.0186,
+    "seconds": -0.003,
+    "step_cap_hits": 0
+  },
+  "correctness_changed": false,
+  "negative_correctness_changed": false,
+  "source_result_file": "d4_d5a_scripted_results.json"
+}

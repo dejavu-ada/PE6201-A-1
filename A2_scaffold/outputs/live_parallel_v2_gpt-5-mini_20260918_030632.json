@@ -1,0 +1,206 @@
+{
+  "config": "BACKEND=live  LIVE - this costs money  |  PROBLEM=B  |  model=gpt-5-mini  |  descriptor=v2  |  PARALLEL_TOOLS=True  |  cap=8 turns  |  autonomy=confirm",
+  "backend": "live",
+  "model": "gpt-5-mini",
+  "descriptor_version": "v2",
+  "execution_mode": "parallel",
+  "started_at": "20260918_030632",
+  "finished_at": "20260918_030656",
+  "cases": [
+    "REF-5602"
+  ],
+  "trial_count_total": 1,
+  "estimated_cost_usd_rough": 0.00192,
+  "summary": {
+    "trials": 1,
+    "passed": 1,
+    "pass_rate": 1.0,
+    "median_turns": 4,
+    "cost_usd": 0.001988
+  },
+  "results": [
+    {
+      "case_id": "REF-5602",
+      "trial": 1,
+      "passed": true,
+      "fails": [],
+      "record": {
+        "decision": "book",
+        "booked": {
+          "clinic": "OPH-C2",
+          "date": "2026-10-14",
+          "time": "11:20"
+        },
+        "band": "routine",
+        "window": {
+          "from": "2026-09-09",
+          "to": "2026-11-04"
+        },
+        "tests": {
+          "attached": [
+            "VF-01"
+          ],
+          "missing": []
+        },
+        "duplicate_check": "no_future_appointment_in_specialty",
+        "case_id": "REF-5602",
+        "evidence": [
+          "get_referral",
+          "check_referral_criteria",
+          "lookup_patient",
+          "as_of",
+          "get_clinic_slots",
+          "book_slot"
+        ],
+        "tool_trace": [
+          {
+            "turn": 1,
+            "tool": "get_referral",
+            "args": {
+              "referral_id": "REF-5602"
+            },
+            "observation": {
+              "referral_id": "REF-5602",
+              "patient_id": "P-1180",
+              "referring_clinic": "Clementi Medical",
+              "specialty": "OPH",
+              "date_received": "2026-09-09",
+              "clinical_summary": "Gradual blurring of vision over the past year, worse for reading. Suspected cataract. Symptoms are gradual and painless.",
+              "tests_attached": [
+                "VF-01"
+              ],
+              "tests_attached_on": "2026-08-28"
+            }
+          },
+          {
+            "turn": 2,
+            "tool": "check_referral_criteria",
+            "args": {
+              "specialty": "OPH",
+              "referral_id": "REF-5602"
+            },
+            "observation": {
+              "instruction_in_free_text": null,
+              "red_flag_term": null,
+              "right_department": true,
+              "missing_tests": [],
+              "band": "routine",
+              "window_weeks": 8
+            }
+          },
+          {
+            "turn": 2,
+            "tool": "lookup_patient",
+            "args": {
+              "patient_id": "P-1180"
+            },
+            "observation": {
+              "patient": {
+                "patient_id": "P-1180",
+                "date_of_birth": "1968-03-14",
+                "existing_appointments": []
+              },
+              "contact": {
+                "patient_id": "P-1180",
+                "method": "sms",
+                "value": "+65 8\u2022\u2022\u2022 \u2022\u202221"
+              }
+            }
+          },
+          {
+            "turn": 2,
+            "tool": "as_of",
+            "args": {},
+            "observation": "2026-09-09"
+          },
+          {
+            "turn": 3,
+            "tool": "get_clinic_slots",
+            "args": {
+              "specialty": "OPH",
+              "band": "routine",
+              "from": "2026-09-09",
+              "to": "2026-11-04"
+            },
+            "observation": [
+              {
+                "clinic": "OPH-C2",
+                "specialty": "OPH",
+                "band": "routine",
+                "date": "2026-10-14",
+                "time": "11:20",
+                "capacity_remaining": 2
+              },
+              {
+                "clinic": "OPH-C2",
+                "specialty": "OPH",
+                "band": "routine",
+                "date": "2026-10-14",
+                "time": "14:00",
+                "capacity_remaining": 1
+              },
+              {
+                "clinic": "OPH-C2",
+                "specialty": "OPH",
+                "band": "routine",
+                "date": "2026-10-28",
+                "time": "09:00",
+                "capacity_remaining": 3
+              }
+            ]
+          },
+          {
+            "turn": 4,
+            "tool": "book_slot",
+            "args": {
+              "clinic": "OPH-C2",
+              "date": "2026-10-14",
+              "time": "11:20",
+              "referral_id": "REF-5602"
+            },
+            "observation": {
+              "booked": true,
+              "clinic": "OPH-C2",
+              "date": "2026-10-14",
+              "time": "11:20",
+              "referral_id": "REF-5602"
+            }
+          }
+        ],
+        "errors": [],
+        "turns": 4,
+        "tokens_in": 11522,
+        "tokens_out": 2090,
+        "cost_usd": 0.001988,
+        "seconds": 24.069,
+        "guardrails_fired": [
+          {
+            "guardrail": "gate_passed",
+            "detail": "book_slot (autonomy=confirm)"
+          }
+        ],
+        "stopped_by": null,
+        "backend": "live",
+        "descriptor_version": "v2",
+        "parallel_tools": true,
+        "execution_mode": "parallel"
+      },
+      "family": "routine_booking_multi_query"
+    }
+  ],
+  "judgement_queue": [
+    {
+      "case_id": "REF-5602",
+      "decision": "book",
+      "reason": "",
+      "must_record": [
+        "urgency band routine and the 8-week window",
+        "booked at 5 weeks",
+        "VF-01 present",
+        "no existing OPH appointment for P-1180"
+      ],
+      "verdict": null,
+      "graded_by": null
+    }
+  ]
+}

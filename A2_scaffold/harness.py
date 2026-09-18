@@ -124,13 +124,18 @@ def prepare_judgement_check(record, expected):
 # =====================================================================
 # RUNNING THE SET
 # =====================================================================
-def run_set(case_ids=None, problem=None, trials_for=None, verbose=False):
+def run_set(case_ids=None, problem=None, trials_for=None, verbose=False,
+            parallel_tools=None):
     """Run cases and grade them.
 
     `trials_for(case_id) -> int` decides how many trials each case gets.
     D4: ordinary cases get ONE trial; NEGATIVE cases get THREE, because
     negatives are the ones that flip between runs and a single trial
     cannot tell a real refusal from a lucky one.
+
+    parallel_tools=None → honour config.PARALLEL_TOOLS
+    parallel_tools=True → dependency-aware grouping (fewer turns)
+    parallel_tools=False → one tool per turn (strictly sequential)
     """
     problem = problem or config.PROBLEM
     key = load_key(problem)
@@ -142,13 +147,12 @@ def run_set(case_ids=None, problem=None, trials_for=None, verbose=False):
     for cid in case_ids:
         expected = key.get(cid)
         if expected is None:
-            # check_my_data.py catches this before you get here. If you
-            # are seeing it, run the checker.
             print("  SKIP %s - no label in the answer key" % cid)
             continue
 
         for trial in range(1, trials_for(cid) + 1):
-            record = run_case(cid, problem=problem, verbose=verbose)
+            record = run_case(cid, problem=problem, verbose=verbose,
+                              parallel_tools=parallel_tools)
             passed, fails = code_check(record, expected)
             results.append({"case_id": cid, "trial": trial, "passed": passed,
                             "fails": fails, "record": record,

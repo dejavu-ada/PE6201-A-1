@@ -17,11 +17,16 @@ cohort so far.
 ====================================================================
 """
 import json
+import os
 import sys
 
 import config
 from backends import SCRIPTS
 from harness import load_cases, load_key, report, run_set
+import results_trace as RT
+
+OUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "outputs")
+os.makedirs(OUT_DIR, exist_ok=True)
 
 
 def main(argv):
@@ -88,6 +93,9 @@ def main(argv):
 
     results, queue = run_set(cases)
     summary = report(results)
+    key = load_key()
+
+    std_rows = RT.standardize_results(results, key)
 
     with open("results.json", "w", encoding="utf-8") as fh:
         json.dump({"config": config.summary(), "summary": summary,
@@ -95,6 +103,15 @@ def main(argv):
                    "judgement_queue": queue}, fh, indent=2, default=str)
     print("  Wrote results.json - commit it. Your result tables come from")
     print("  here, and a marker reads it alongside your report.")
+
+    RT.write_standard_json(std_rows,
+        os.path.join(OUT_DIR, "eval_parallel_trace.json"),
+        extra_meta={"experiment": "scripted_eval_parallel",
+                    "execution_mode": "parallel",
+                    "judgement_queue": queue})
+    RT.write_standard_csv(std_rows,
+        os.path.join(OUT_DIR, "eval_parallel_trace.csv"))
+    print("  wrote outputs/eval_parallel_trace.json + .csv (unified format)")
     print()
     return 0
 

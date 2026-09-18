@@ -1,0 +1,383 @@
+{
+  "config": {
+    "price_in_per_million": 0.1,
+    "price_out_per_million": 0.4,
+    "failure_cost_per_bad_booking_usd": 9.17,
+    "monthly_fixed_usd": 2920.0,
+    "volume_per_month": 4000
+  },
+  "models": [
+    {
+      "label": "results_parallel.json",
+      "trials": 70,
+      "passed": 70,
+      "pass_rate": 1.0,
+      "median_turns": 4.0,
+      "total_cost_usd_measured": 0.126684,
+      "tokens_in_per_case": 16088.57142857143,
+      "tokens_out_per_case": 502.2857142857143,
+      "layer_breakdown": {
+        "L1_per_case": 0.001809771428571429,
+        "L2_per_case": 0.0,
+        "L3_fixed_monthly": 2920.0
+      },
+      "monthly_totals": {
+        "volume": 4000,
+        "L1_per_case": 0.001809771428571429,
+        "L2_per_case": 0.0,
+        "L3_fixed_monthly": 2920.0,
+        "variable_per_case": 0.001809771428571429,
+        "total_monthly": 2927.239085714286,
+        "cost_per_case_average": 0.7318097714285715
+      },
+      "sensitivity": [
+        {
+          "model_label": "results_parallel.json",
+          "delta_pp": -10,
+          "success_rate": 0.9,
+          "failure_rate": 0.09999999999999998,
+          "L2_per_case": 0.9169999999999998,
+          "total_monthly": 6595.2390857142855,
+          "avg_cost_per_case": 1.6488097714285714
+        },
+        {
+          "model_label": "results_parallel.json",
+          "delta_pp": -8,
+          "success_rate": 0.92,
+          "failure_rate": 0.07999999999999996,
+          "L2_per_case": 0.7335999999999996,
+          "total_monthly": 5861.639085714284,
+          "avg_cost_per_case": 1.465409771428571
+        },
+        {
+          "model_label": "results_parallel.json",
+          "delta_pp": -6,
+          "success_rate": 0.94,
+          "failure_rate": 0.06000000000000005,
+          "L2_per_case": 0.5502000000000005,
+          "total_monthly": 5128.0390857142875,
+          "avg_cost_per_case": 1.2820097714285719
+        },
+        {
+          "model_label": "results_parallel.json",
+          "delta_pp": -4,
+          "success_rate": 0.96,
+          "failure_rate": 0.040000000000000036,
+          "L2_per_case": 0.36680000000000035,
+          "total_monthly": 4394.439085714287,
+          "avg_cost_per_case": 1.0986097714285719
+        },
+        {
+          "model_label": "results_parallel.json",
+          "delta_pp": -2,
+          "success_rate": 0.98,
+          "failure_rate": 0.020000000000000018,
+          "L2_per_case": 0.18340000000000017,
+          "total_monthly": 3660.8390857142863,
+          "avg_cost_per_case": 0.9152097714285715
+        },
+        {
+          "model_label": "results_parallel.json",
+          "delta_pp": 0,
+          "success_rate": 1.0,
+          "failure_rate": 0.0,
+          "L2_per_case": 0.0,
+          "total_monthly": 2927.239085714286,
+          "avg_cost_per_case": 0.7318097714285715
+        },
+        {
+          "model_label": "results_parallel.json",
+          "delta_pp": 2,
+          "success_rate": 1.0,
+          "failure_rate": 0.0,
+          "L2_per_case": 0.0,
+          "total_monthly": 2927.239085714286,
+          "avg_cost_per_case": 0.7318097714285715
+        },
+        {
+          "model_label": "results_parallel.json",
+          "delta_pp": 4,
+          "success_rate": 1.0,
+          "failure_rate": 0.0,
+          "L2_per_case": 0.0,
+          "total_monthly": 2927.239085714286,
+          "avg_cost_per_case": 0.7318097714285715
+        },
+        {
+          "model_label": "results_parallel.json",
+          "delta_pp": 6,
+          "success_rate": 1.0,
+          "failure_rate": 0.0,
+          "L2_per_case": 0.0,
+          "total_monthly": 2927.239085714286,
+          "avg_cost_per_case": 0.7318097714285715
+        },
+        {
+          "model_label": "results_parallel.json",
+          "delta_pp": 8,
+          "success_rate": 1.0,
+          "failure_rate": 0.0,
+          "L2_per_case": 0.0,
+          "total_monthly": 2927.239085714286,
+          "avg_cost_per_case": 0.7318097714285715
+        },
+        {
+          "model_label": "results_parallel.json",
+          "delta_pp": 10,
+          "success_rate": 1.0,
+          "failure_rate": 0.0,
+          "L2_per_case": 0.0,
+          "total_monthly": 2927.239085714286,
+          "avg_cost_per_case": 0.7318097714285715
+        }
+      ],
+      "monthly_volume_table": [
+        {
+          "model_label": "results_parallel.json",
+          "monthly_volume": 200,
+          "L1_monthly": 0.3619542857142858,
+          "L2_monthly": 0.0,
+          "L3_fixed_monthly": 2920.0,
+          "total_monthly": 2920.361954285714,
+          "avg_cost_per_case": 14.60180977142857
+        },
+        {
+          "model_label": "results_parallel.json",
+          "monthly_volume": 500,
+          "L1_monthly": 0.9048857142857145,
+          "L2_monthly": 0.0,
+          "L3_fixed_monthly": 2920.0,
+          "total_monthly": 2920.9048857142857,
+          "avg_cost_per_case": 5.841809771428571
+        },
+        {
+          "model_label": "results_parallel.json",
+          "monthly_volume": 1000,
+          "L1_monthly": 1.809771428571429,
+          "L2_monthly": 0.0,
+          "L3_fixed_monthly": 2920.0,
+          "total_monthly": 2921.8097714285714,
+          "avg_cost_per_case": 2.9218097714285713
+        },
+        {
+          "model_label": "results_parallel.json",
+          "monthly_volume": 2000,
+          "L1_monthly": 3.619542857142858,
+          "L2_monthly": 0.0,
+          "L3_fixed_monthly": 2920.0,
+          "total_monthly": 2923.6195428571427,
+          "avg_cost_per_case": 1.4618097714285714
+        },
+        {
+          "model_label": "results_parallel.json",
+          "monthly_volume": 5000,
+          "L1_monthly": 9.048857142857145,
+          "L2_monthly": 0.0,
+          "L3_fixed_monthly": 2920.0,
+          "total_monthly": 2929.0488571428573,
+          "avg_cost_per_case": 0.5858097714285715
+        },
+        {
+          "model_label": "results_parallel.json",
+          "monthly_volume": 10000,
+          "L1_monthly": 18.09771428571429,
+          "L2_monthly": 0.0,
+          "L3_fixed_monthly": 2920.0,
+          "total_monthly": 2938.097714285714,
+          "avg_cost_per_case": 0.2938097714285714
+        }
+      ]
+    },
+    {
+      "label": "results_sequential.json",
+      "trials": 70,
+      "passed": 70,
+      "pass_rate": 1.0,
+      "median_turns": 5.0,
+      "total_cost_usd_measured": 0.178752,
+      "tokens_in_per_case": 23040.0,
+      "tokens_out_per_case": 624.0,
+      "layer_breakdown": {
+        "L1_per_case": 0.0025536,
+        "L2_per_case": 0.0,
+        "L3_fixed_monthly": 2920.0
+      },
+      "monthly_totals": {
+        "volume": 4000,
+        "L1_per_case": 0.0025536,
+        "L2_per_case": 0.0,
+        "L3_fixed_monthly": 2920.0,
+        "variable_per_case": 0.0025536,
+        "total_monthly": 2930.2144,
+        "cost_per_case_average": 0.7325535999999999
+      },
+      "sensitivity": [
+        {
+          "model_label": "results_sequential.json",
+          "delta_pp": -10,
+          "success_rate": 0.9,
+          "failure_rate": 0.09999999999999998,
+          "L2_per_case": 0.9169999999999998,
+          "total_monthly": 6598.214399999999,
+          "avg_cost_per_case": 1.6495535999999997
+        },
+        {
+          "model_label": "results_sequential.json",
+          "delta_pp": -8,
+          "success_rate": 0.92,
+          "failure_rate": 0.07999999999999996,
+          "L2_per_case": 0.7335999999999996,
+          "total_monthly": 5864.614399999999,
+          "avg_cost_per_case": 1.4661535999999997
+        },
+        {
+          "model_label": "results_sequential.json",
+          "delta_pp": -6,
+          "success_rate": 0.94,
+          "failure_rate": 0.06000000000000005,
+          "L2_per_case": 0.5502000000000005,
+          "total_monthly": 5131.014400000002,
+          "avg_cost_per_case": 1.2827536000000004
+        },
+        {
+          "model_label": "results_sequential.json",
+          "delta_pp": -4,
+          "success_rate": 0.96,
+          "failure_rate": 0.040000000000000036,
+          "L2_per_case": 0.36680000000000035,
+          "total_monthly": 4397.4144000000015,
+          "avg_cost_per_case": 1.0993536000000004
+        },
+        {
+          "model_label": "results_sequential.json",
+          "delta_pp": -2,
+          "success_rate": 0.98,
+          "failure_rate": 0.020000000000000018,
+          "L2_per_case": 0.18340000000000017,
+          "total_monthly": 3663.8144000000007,
+          "avg_cost_per_case": 0.9159536000000001
+        },
+        {
+          "model_label": "results_sequential.json",
+          "delta_pp": 0,
+          "success_rate": 1.0,
+          "failure_rate": 0.0,
+          "L2_per_case": 0.0,
+          "total_monthly": 2930.2144,
+          "avg_cost_per_case": 0.7325535999999999
+        },
+        {
+          "model_label": "results_sequential.json",
+          "delta_pp": 2,
+          "success_rate": 1.0,
+          "failure_rate": 0.0,
+          "L2_per_case": 0.0,
+          "total_monthly": 2930.2144,
+          "avg_cost_per_case": 0.7325535999999999
+        },
+        {
+          "model_label": "results_sequential.json",
+          "delta_pp": 4,
+          "success_rate": 1.0,
+          "failure_rate": 0.0,
+          "L2_per_case": 0.0,
+          "total_monthly": 2930.2144,
+          "avg_cost_per_case": 0.7325535999999999
+        },
+        {
+          "model_label": "results_sequential.json",
+          "delta_pp": 6,
+          "success_rate": 1.0,
+          "failure_rate": 0.0,
+          "L2_per_case": 0.0,
+          "total_monthly": 2930.2144,
+          "avg_cost_per_case": 0.7325535999999999
+        },
+        {
+          "model_label": "results_sequential.json",
+          "delta_pp": 8,
+          "success_rate": 1.0,
+          "failure_rate": 0.0,
+          "L2_per_case": 0.0,
+          "total_monthly": 2930.2144,
+          "avg_cost_per_case": 0.7325535999999999
+        },
+        {
+          "model_label": "results_sequential.json",
+          "delta_pp": 10,
+          "success_rate": 1.0,
+          "failure_rate": 0.0,
+          "L2_per_case": 0.0,
+          "total_monthly": 2930.2144,
+          "avg_cost_per_case": 0.7325535999999999
+        }
+      ],
+      "monthly_volume_table": [
+        {
+          "model_label": "results_sequential.json",
+          "monthly_volume": 200,
+          "L1_monthly": 0.5107200000000001,
+          "L2_monthly": 0.0,
+          "L3_fixed_monthly": 2920.0,
+          "total_monthly": 2920.51072,
+          "avg_cost_per_case": 14.6025536
+        },
+        {
+          "model_label": "results_sequential.json",
+          "monthly_volume": 500,
+          "L1_monthly": 1.2768,
+          "L2_monthly": 0.0,
+          "L3_fixed_monthly": 2920.0,
+          "total_monthly": 2921.2768,
+          "avg_cost_per_case": 5.8425536000000005
+        },
+        {
+          "model_label": "results_sequential.json",
+          "monthly_volume": 1000,
+          "L1_monthly": 2.5536,
+          "L2_monthly": 0.0,
+          "L3_fixed_monthly": 2920.0,
+          "total_monthly": 2922.5536,
+          "avg_cost_per_case": 2.9225536
+        },
+        {
+          "model_label": "results_sequential.json",
+          "monthly_volume": 2000,
+          "L1_monthly": 5.1072,
+          "L2_monthly": 0.0,
+          "L3_fixed_monthly": 2920.0,
+          "total_monthly": 2925.1072,
+          "avg_cost_per_case": 1.4625536
+        },
+        {
+          "model_label": "results_sequential.json",
+          "monthly_volume": 5000,
+          "L1_monthly": 12.768,
+          "L2_monthly": 0.0,
+          "L3_fixed_monthly": 2920.0,
+          "total_monthly": 2932.768,
+          "avg_cost_per_case": 0.5865536
+        },
+        {
+          "model_label": "results_sequential.json",
+          "monthly_volume": 10000,
+          "L1_monthly": 25.536,
+          "L2_monthly": 0.0,
+          "L3_fixed_monthly": 2920.0,
+          "total_monthly": 2945.536,
+          "avg_cost_per_case": 0.2945536
+        }
+      ]
+    }
+  ],
+  "break_even": {
+    "cheap_model_label": "results_parallel.json",
+    "expensive_model_label": "results_sequential.json",
+    "L1_per_case_cheap": 0.001809771428571429,
+    "L1_per_case_expensive": 0.0025536,
+    "expensive_measured_pass_rate": 1.0,
+    "cheap_model_measured_pass_rate": 1.0,
+    "break_even_pass_rate_cheap_model_would_need": 0.9999188845614582,
+    "interpretation": "The cheap model needs a success rate of 99.9919% to match the expensive model's total variable cost per referral at a failure cost of US$9.17."
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "v1": {
+    "version": "v1",
+    "system_prompt_chars": 8118,
+    "descriptor_chars_total": 9026,
+    "tools": [
+      "get_referral",
+      "lookup_patient",
+      "check_referral_criteria",
+      "book_slot",
+      "as_of",
+      "get_claim",
+      "lookup_policy",
+      "lookup_hospital",
+      "check_coverage",
+      "check_duplicate_claim",
+      "issue_decision_letter",
+      "get_clinic_slots",
+      "get_preauthorisation"
+    ],
+    "active_set_in_tools": null
+  },
+  "v2": {
+    "version": "v2",
+    "system_prompt_chars": 8513,
+    "descriptor_chars_total": 9410,
+    "tools": [
+      "get_referral",
+      "lookup_patient",
+      "check_referral_criteria",
+      "book_slot",
+      "as_of",
+      "get_claim",
+      "lookup_policy",
+      "lookup_hospital",
+      "check_coverage",
+      "check_duplicate_claim",
+      "issue_decision_letter",
+      "get_clinic_slots",
+      "get_preauthorisation"
+    ],
+    "active_set_in_tools": null
+  }
+}

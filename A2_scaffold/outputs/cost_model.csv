@@ -1,0 +1,3 @@
+model_label,trials,success_rate_pct,median_turns,tokens_in_per_case,tokens_out_per_case,L1_token_cost_per_case_usd,L2_failure_cost_per_case_usd,L3_fixed_monthly_usd,total_variable_per_case_usd,total_monthly_usd,avg_cost_per_case_usd,failure_cost_per_bad_booking_usd,monthly_volume
+results_parallel.json,70,100.0,4.0,16089,502,0.001809771428571429,0.0,2920.0,0.001809771428571429,2927.239085714286,0.7318097714285715,9.17,4000
+results_sequential.json,70,100.0,5.0,23040,624,0.0025536,0.0,2920.0,0.0025536,2930.2144,0.7325535999999999,9.17,4000

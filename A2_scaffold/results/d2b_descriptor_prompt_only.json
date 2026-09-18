@@ -1,10 +1,10 @@
 {
-  "generated_at_utc": "2026-09-18T10:37:04.396442+00:00",
+  "generated_at_utc": "2026-09-18T14:25:38.698702+00:00",
   "problem": "B",
-  "model": "openai/gpt-4o-mini",
+  "model": "openai/gpt-5-mini",
   "backend": "prompt_only",
   "controlled_variables": {
-    "same_model": "openai/gpt-4o-mini",
+    "same_model": "openai/gpt-5-mini",
     "same_cases": [
       "REF-5590",
       "REF-5602",
@@ -66,14 +66,14 @@
   "versions": {
     "v1": {
       "prompt": {
-        "characters": 8922,
-        "rough_tokens_chars_div_4": 2230
+        "characters": 8370,
+        "rough_tokens_chars_div_4": 2092
       }
     },
     "v2": {
       "prompt": {
-        "characters": 11270,
-        "rough_tokens_chars_div_4": 2817
+        "characters": 9297,
+        "rough_tokens_chars_div_4": 2324
       }
     }
   }

@@ -1,2 +1,0 @@
-case_id,backend,model,prompt_version,execution_mode,decision,trigger,missing,booked_clinic,booked_date,booked_time,passed,turns,tool_calls,tokens_in,tokens_out,cost_usd,cap_fired,evidence,gate,family,trial_number,guardrails_fired,fails
-REF-5602,live,gpt-5-mini,v2,parallel,book,,,OPH-C2,2026-10-14,11:20,True,4,6,11522,2090,0.001988,,get_referral | check_referral_criteria | lookup_patient | as_of | get_clinic_slots | book_slot,gate_passed,routine_booking_multi_query,1,gate_passed,

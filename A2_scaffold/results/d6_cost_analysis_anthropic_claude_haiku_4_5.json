@@ -1,0 +1,123 @@
+{
+  "schema_version": "experiment-result-1.0",
+  "experiment": "D6 economics, sensitivity and break-even",
+  "generated_at_utc": "2026-09-18T19:08:43.131502+00:00",
+  "identity": {
+    "backend": "live",
+    "model": "anthropic/claude-haiku-4.5",
+    "problem": "B"
+  },
+  "run_metadata": {
+    "price_tier": "mid",
+    "price_in_per_million": 1.0,
+    "price_out_per_million": 5.0,
+    "last_updated_utc": "2026-09-18T17:35:33.489433+00:00"
+  },
+  "runs": [
+    {
+      "descriptor_version": "v2",
+      "call_mode": "parallel",
+      "trials": 70,
+      "pass_rate": 1.0,
+      "negative_pass_rate": 1.0,
+      "tokens_in": 817354,
+      "tokens_out": 36544,
+      "token_source": "measured_api_usage",
+      "economics": {
+        "formula": "token_cost + (1-pass_rate)*failure_cost",
+        "token_cost_per_case": 0.014286771428571427,
+        "failure_cost_usd": 9.17,
+        "expected_failure_cost_per_case": 0.0,
+        "expected_variable_cost_per_case": 0.014286771428571427,
+        "monthly_volume": 4000,
+        "variable_monthly_cost": 57.14708571428571,
+        "fixed_monthly_cost": 2920.0,
+        "total_monthly_cost": 2977.147085714286,
+        "average_full_cost_per_case": 0.7442867714285715,
+        "break_even_pass_rate_vs_human": 0.08116540582645271,
+        "break_even_monthly_volume": 318.9265464199788,
+        "sensitivity": [
+          {
+            "delta_percentage_points": -10,
+            "pass_rate": 0.9,
+            "expected_variable_cost_per_case": 0.9312867714285712,
+            "total_monthly_cost": 6645.147085714285,
+            "average_full_cost_per_case": 1.6612867714285713
+          },
+          {
+            "delta_percentage_points": -8,
+            "pass_rate": 0.92,
+            "expected_variable_cost_per_case": 0.747886771428571,
+            "total_monthly_cost": 5911.547085714284,
+            "average_full_cost_per_case": 1.4778867714285708
+          },
+          {
+            "delta_percentage_points": -6,
+            "pass_rate": 0.94,
+            "expected_variable_cost_per_case": 0.5644867714285718,
+            "total_monthly_cost": 5177.947085714288,
+            "average_full_cost_per_case": 1.294486771428572
+          },
+          {
+            "delta_percentage_points": -4,
+            "pass_rate": 0.96,
+            "expected_variable_cost_per_case": 0.3810867714285718,
+            "total_monthly_cost": 4444.3470857142875,
+            "average_full_cost_per_case": 1.111086771428572
+          },
+          {
+            "delta_percentage_points": -2,
+            "pass_rate": 0.98,
+            "expected_variable_cost_per_case": 0.1976867714285716,
+            "total_monthly_cost": 3710.747085714286,
+            "average_full_cost_per_case": 0.9276867714285716
+          },
+          {
+            "delta_percentage_points": 0,
+            "pass_rate": 1.0,
+            "expected_variable_cost_per_case": 0.014286771428571427,
+            "total_monthly_cost": 2977.147085714286,
+            "average_full_cost_per_case": 0.7442867714285715
+          },
+          {
+            "delta_percentage_points": 2,
+            "pass_rate": 1.0,
+            "expected_variable_cost_per_case": 0.014286771428571427,
+            "total_monthly_cost": 2977.147085714286,
+            "average_full_cost_per_case": 0.7442867714285715
+          },
+          {
+            "delta_percentage_points": 4,
+            "pass_rate": 1.0,
+            "expected_variable_cost_per_case": 0.014286771428571427,
+            "total_monthly_cost": 2977.147085714286,
+            "average_full_cost_per_case": 0.7442867714285715
+          },
+          {
+            "delta_percentage_points": 6,
+            "pass_rate": 1.0,
+            "expected_variable_cost_per_case": 0.014286771428571427,
+            "total_monthly_cost": 2977.147085714286,
+            "average_full_cost_per_case": 0.7442867714285715
+          },
+          {
+            "delta_percentage_points": 8,
+            "pass_rate": 1.0,
+            "expected_variable_cost_per_case": 0.014286771428571427,
+            "total_monthly_cost": 2977.147085714286,
+            "average_full_cost_per_case": 0.7442867714285715
+          },
+          {
+            "delta_percentage_points": 10,
+            "pass_rate": 1.0,
+            "expected_variable_cost_per_case": 0.014286771428571427,
+            "total_monthly_cost": 2977.147085714286,
+            "average_full_cost_per_case": 0.7442867714285715
+          }
+        ]
+      }
+    }
+  ],
+  "source_result_file": "results_anthropic_claude_haiku_4_5.json",
+  "warning": "Only rows labelled measured_api_usage may support live D6 claims."
+}

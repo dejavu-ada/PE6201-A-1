@@ -1,8 +1,0 @@
-cheap_model_label,results_parallel.json
-expensive_model_label,results_sequential.json
-L1_per_case_cheap,0.001809771428571429
-L1_per_case_expensive,0.0025536
-expensive_measured_pass_rate,1.0
-cheap_model_measured_pass_rate,1.0
-break_even_pass_rate_cheap_model_would_need,0.9999188845614582
-interpretation,The cheap model needs a success rate of 99.9919% to match the expensive model's total variable cost per referral at a failure cost of US$9.17.

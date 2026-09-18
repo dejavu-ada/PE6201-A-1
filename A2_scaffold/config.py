@@ -117,8 +117,8 @@ def data_root():
 # Checked against vendor pages 28 August 2026. RE-CHECK THEM: quoting a
 # price you did not verify is the kind of thing D6 is marked on.
 # ─────────────────────────────────────────────────────────────────────
-PRICE_IN = 0.25
-PRICE_OUT = 2.00
+PRICE_IN = 0.075
+PRICE_OUT = 0.20
 
 MONTHLY_VOLUME = 4000
 HUMAN_HOURLY_RATE = 55.0

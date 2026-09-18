@@ -185,7 +185,16 @@ def run_set(case_ids=None, problem=None, trials_for=None, verbose=False):
             continue
 
         for trial in range(1, trials_for(cid) + 1):
-            record = run_case(cid, problem=problem, verbose=verbose)
+            # The evaluation harness explicitly simulates recorded human
+            # approval so booking cases can be scored deterministically.
+            # Outside this harness, a live agent without approval remains
+            # blocked by the confirm gate immediately before book_slot.
+            record = run_case(
+                cid,
+                problem=problem,
+                approve=lambda action, payload: True,
+                verbose=verbose,
+            )
             passed, fails = code_check(record, expected)
             results.append({"case_id": cid, "trial": trial, "passed": passed,
                             "fails": fails, "record": record,

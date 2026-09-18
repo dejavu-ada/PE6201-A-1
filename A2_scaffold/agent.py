@@ -80,7 +80,7 @@ def run_case(case_id, problem=None, approve=None, verbose=False):
     # On the scripted backend the gate auto-approves so the run stays
     # deterministic. The RECORD still shows the gate was reached and
     # passed, which is what a marker looks for.
-    if approve is None:
+    if approve is None and backend.name == "scripted":
         approve = lambda action, payload: True
 
     try:
@@ -93,6 +93,43 @@ def run_case(case_id, problem=None, approve=None, verbose=False):
             ti, to = backend.token_estimate(transcript)
             tokens_in, tokens_out = tokens_in + ti, tokens_out + to
             guards.check_budget(tokens_in + tokens_out)
+
+            # Some providers wrap an otherwise valid move in a top-level
+            # JSON array, or return the call array directly. Normalise those
+            # equivalent representations before the loop reads move fields.
+            if isinstance(move, list):
+                if (len(move) == 1
+                        and isinstance(move[0], dict)
+                        and any(key in move[0]
+                                for key in ("thought", "calls", "final"))):
+                    move = move[0]
+                elif (len(move) == 2
+                      and isinstance(move[0], str)
+                      and isinstance(move[1], dict)):
+                    move = {"thought": "", "calls": [move]}
+                elif move and all(
+                    (isinstance(call, dict)
+                     and ("tool" in call or "name" in call)
+                     and ("args" in call or "arguments" in call))
+                    or (isinstance(call, (list, tuple))
+                        and len(call) == 2)
+                    for call in move
+                ):
+                    move = {"thought": "", "calls": move}
+
+            if not isinstance(move, dict):
+                errors.append({
+                    "after_turn": turns,
+                    "type": "invalid_model_move",
+                    "detail": "top-level model response must be a JSON object",
+                    "move": move,
+                })
+                record = {
+                    "decision": "escalate",
+                    "reason": "invalid model move: malformed top-level response",
+                }
+                stopped_by = "invalid_model_move"
+                break
 
             if verbose:
                 label = ("conclude" if "final" in move else "turn %d" % (turns + 1))
@@ -122,8 +159,12 @@ def run_case(case_id, problem=None, approve=None, verbose=False):
             if move.get("calls"):
                 raw_calls = move["calls"]
 
-            elif "tool" in move and "args" in move:
-                raw_calls = [(move["tool"], move["args"])]
+            elif (("tool" in move or "name" in move)
+                  and ("args" in move or "arguments" in move)):
+                raw_calls = [(
+                    move.get("tool", move.get("name")),
+                    move.get("args", move.get("arguments")),
+                )]
 
             else:
                 errors.append({
@@ -139,7 +180,51 @@ def run_case(case_id, problem=None, approve=None, verbose=False):
                 }
                 stopped_by = "invalid_model_move"
                 break
+            # Models commonly express a call either as
+            # ["tool_name", {"arg": "value"}] or as
+            # {"tool": "tool_name", "args": {"arg": "value"}}.
+            # Normalise both equivalent representations before validating.
+            normalised_calls = []
+            if isinstance(raw_calls, (list, tuple)):
+                for call in raw_calls:
+                    if isinstance(call, dict):
+                        normalised_calls.append((
+                            call.get("tool", call.get("name")),
+                            call.get("args", call.get("arguments")),
+                        ))
+                    else:
+                        normalised_calls.append(call)
+            raw_calls = normalised_calls
 
+            # Reject malformed calls as model failures instead of crashing
+            # the entire evaluation batch inside a guardrail or tool.
+            valid_calls = (
+                len(raw_calls) > 0
+                and all(
+                    isinstance(call, (list, tuple))
+                    and len(call) == 2
+                    and isinstance(call[0], str)
+                    and isinstance(call[1], dict)
+                    for call in raw_calls
+                )
+            )
+
+            if not valid_calls:
+                errors.append({
+                    "after_turn": turns,
+                    "type": "invalid_model_move",
+                    "detail": (
+                        "tool call must contain a tool/name string and "
+                        "an args/arguments JSON object"
+                    ),
+                    "move": move,
+                })
+                record = {
+                    "decision": "escalate",
+                    "reason": "invalid model move: malformed tool call",
+                }
+                stopped_by = "invalid_model_move"
+                break
             # In parallel mode every independent call returned by the model
             # shares one tool-calling turn. In sequential mode the same calls
             # are executed one per turn. The prompt asks the live model to

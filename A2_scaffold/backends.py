@@ -1687,7 +1687,9 @@ class LiveBackend:
             {"role": "system", "content": self.system_prompt},
             {
                 "role": "user",
-                "content": f"Handle referral {self.case_id}."
+                "content": f"Handle referral {self.case_id}. "
+                           "Reply with a single JSON move object only "
+                           "(no prose, no code fences)."
             }
         ]
 
@@ -1698,25 +1700,118 @@ class LiveBackend:
             })
 
         raw, ti, to = _live_call(messages)
+        move = _parse_move(raw)
+
+        # If the model ignored the JSON contract, nudge once and retry.
+        # Both calls' real token usage counts toward the run cost.
+        if _is_parse_failure(move):
+            nudge = messages + [
+                {"role": "assistant", "content": str(raw or "")},
+                {"role": "user",
+                 "content": "That reply was not valid. Reply with ONE JSON "
+                            "object and nothing else:\n"
+                            '{"thought":"...","calls":[["tool_name",'
+                            '{"arg":"value"}]]}\nor\n'
+                            '{"final":{"decision":"...","reason":"..."}}'},
+            ]
+            raw2, ti2, to2 = _live_call(nudge)
+            self.last_tokens_in = ti + ti2
+            self.last_tokens_out = to + to2
+            return _parse_move(raw2)
 
         self.last_tokens_in = ti
         self.last_tokens_out = to
-
-        return _parse_move(raw)
+        return move
 #--------真实返回token-----------
     def token_estimate(self, transcript):
         return self.last_tokens_in, self.last_tokens_out
 
 
+def _is_parse_failure(move):
+    """True when _parse_move returned one of its generated escalate-fallback
+    moves rather than something the model actually decided."""
+    if not isinstance(move, dict) or "final" not in move:
+        return False
+    reason = move["final"].get("reason", "")
+    return reason in (
+        "model did not return parseable JSON",
+        "model returned empty or non-string content",
+        "model did not return a JSON object",
+    )
+
+
 def _parse_move(text):
     """The model must answer in JSON. Anything else is a run you cannot
     grade, so say so loudly rather than guessing."""
-    try:
-        return json.loads(text)
-    except json.JSONDecodeError:
+    if not text or not isinstance(text, (str, bytes, bytearray)):
         return {"final": {"decision": "escalate",
-                          "reason": "model did not return parseable JSON"},
-                "thought": "unparseable: %s" % text[:200]}
+                          "reason": "model returned empty or non-string content"},
+                "thought": "empty/None response from model"}
+    try:
+        result = json.loads(text)
+        if not isinstance(result, dict):
+            return {"final": {"decision": "escalate",
+                              "reason": "model did not return a JSON object"},
+                    "thought": "non-object JSON: %s" % str(text)[:200]}
+        return result
+    except json.JSONDecodeError:
+        pass
+
+    # Fallback 1: JSON wrapped in markdown code fences ```json ... ```
+    import re as _re
+    fences = _re.findall(r"```(?:json)?\s*(.*?)```", str(text), _re.S)
+    for fence in fences:
+        try:
+            fenced = json.loads(fence)
+        except json.JSONDecodeError:
+            continue
+        if isinstance(fenced, dict):
+            return fenced
+
+    # Fallback 1b: first { to last } anywhere in the text (prose + JSON)
+    raw_text = str(text)
+    first, last = raw_text.find("{"), raw_text.rfind("}")
+    if first != -1 and last > first:
+        try:
+            substring = json.loads(raw_text[first:last + 1])
+            if isinstance(substring, dict):
+                return substring
+        except json.JSONDecodeError:
+            pass
+
+    # Fallback 2: Claude-style <function_calls>[["tool", {args}], ...]</function_calls>
+    blocks = _re.findall(r"<function_calls>\s*(.*?)\s*</function_calls>",
+                         str(text), _re.S)
+    calls = []
+    seen = set()
+    final_obj = None
+    for block in blocks:
+        try:
+            parsed = json.loads(block)
+        except json.JSONDecodeError:
+            continue
+        items = parsed if isinstance(parsed, list) else [parsed]
+        for item in items:
+            if (isinstance(item, list) and len(item) >= 2
+                    and isinstance(item[0], str)):
+                name, args = item[0], item[1]
+                if name == "final" and isinstance(args, dict):
+                    final_obj = args
+                elif isinstance(args, dict):
+                    key = (name, json.dumps(args, sort_keys=True))
+                    if key not in seen:
+                        seen.add(key)
+                        calls.append((name, args))
+    if final_obj is not None:
+        return {"final": final_obj,
+                "thought": str(text).strip()[:200]}
+    if calls:
+        first_line = str(text).strip().split("\n")[0][:200]
+        return {"thought": first_line, "calls": calls}
+
+    return {"final": {"decision": "escalate",
+                      "reason": "model did not return parseable JSON"},
+            "thought": "unparseable: %s" % text[:200]}
 
 
 def _live_call(messages):
@@ -1731,33 +1826,55 @@ def _live_call(messages):
             "\n  BACKEND is 'live' but OPENROUTER_API_KEY is not set.\n"
             "    export OPENROUTER_API_KEY='sk-or-...'\n"
             "  Or set BACKEND = 'scripted' in config.py, which is free.\n")
-#-------------添加json格式----------------
-    body = json.dumps({
-        "model": config.MODEL,
-        "messages": messages,
-        "temperature": 0,
-        "response_format": {"type": "json_object"},
-        "usage": {"include": True},
-    }).encode()
-    req = urllib.request.Request(
-        config.BASE_URL.rstrip("/") + "/chat/completions",
-        data=body,
-        headers={"Authorization": "Bearer " + config.API_KEY,
-                 "Content-Type": "application/json"})
-    #---------------此处也加以修改--------------
-    with urllib.request.urlopen(req, timeout=60) as r:
-        payload = json.load(r)
 
-    usage = payload.get("usage", {})
+    import time as _time
 
-    prompt_tokens = usage.get("prompt_tokens", 0)
-    completion_tokens = usage.get("completion_tokens", 0)
+    def _do_request(use_response_format=True):
+        body_dict = {
+            "model": config.MODEL,
+            "messages": messages,
+            "temperature": 0,
+        }
+        if use_response_format:
+            body_dict["response_format"] = {"type": "json_object"}
+        body = json.dumps(body_dict).encode()
+        req = urllib.request.Request(
+            config.BASE_URL.rstrip("/") + "/chat/completions",
+            data=body,
+            headers={"Authorization": "Bearer " + config.API_KEY,
+                     "Content-Type": "application/json"})
+        return urllib.request.urlopen(req, timeout=60)
 
-    return (
-        payload["choices"][0]["message"]["content"],
-        prompt_tokens,
-        completion_tokens,
-    )
+    last_err = None
+    for attempt in range(3):
+        use_rf = True if attempt == 0 else False
+        try:
+            r = _do_request(use_response_format=use_rf)
+            with r as resp:
+                raw = resp.read()
+                payload = json.loads(raw)
+            usage = payload.get("usage", {})
+            return (
+                payload["choices"][0]["message"]["content"],
+                usage.get("prompt_tokens", 0),
+                usage.get("completion_tokens", 0),
+            )
+        except urllib.error.HTTPError as e:
+            err_body = e.read().decode("utf-8", errors="replace")
+            last_err = "HTTP %d: %s | %s" % (e.code, e.reason, err_body[:300])
+            if e.code == 400 and use_rf:
+                continue
+            raise SystemExit("\n  API error: %s\n  model=%s\n"
+                             % (last_err, config.MODEL))
+        except (TimeoutError, OSError, urllib.error.URLError) as e:
+            last_err = str(e)
+            if attempt < 2:
+                _time.sleep(3)
+                continue
+            raise SystemExit(
+                "\n  Timeout/Network after 3 retries: %s\n  model=%s\n"
+                % (last_err, config.MODEL))
+    raise SystemExit("\n  Failed: %s\n  model=%s\n" % (last_err, config.MODEL))
 
 
 def make_backend(case_id, tool_descriptors=None, system_prompt=""):

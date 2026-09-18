@@ -1,5 +1,0 @@
-codecheck_fails_booked_field,codecheck_fails_decision,cost_usd,dedup_guard_fires,failure,failure_name,layer,max_turns,median_turns,pass_rate,passed,phase,step_cap_hits,tokens_in,tokens_out,total_recorded_errors,trials
-,,0.104628,0,F1,D7 F1 loop-control (dedup guard removed),loop-control (guardrails.py check_duplicate),4,4.0,1.0,50,before,0,935400,27720,0,50
-,,0.209256,0,F1,D7 F1 loop-control (dedup guard removed),loop-control (guardrails.py check_duplicate),8,8.0,1.0,50,after,0,1870800,55440,0,50
-0,0,0.126684,,F2,D7 F2 prompt/descriptor layer (descriptor corruption),prompt/descriptor (tools.DESCRIPTOR_SETS v2 entries),4,4.0,1.0,70,before,,1126200,35160,,70
-40,0,0.126684,,F2,D7 F2 prompt/descriptor layer (descriptor corruption),prompt/descriptor (tools.DESCRIPTOR_SETS v2 entries),4,4.0,0.42857142857142855,30,after,,1126200,35160,,70

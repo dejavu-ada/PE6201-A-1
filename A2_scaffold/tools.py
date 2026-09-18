@@ -51,7 +51,8 @@ against no policy at all.
 """
 import json
 import os
-from datetime import date
+import re
+from datetime import date, datetime, timedelta
 
 import config
 _CACHE = {}
@@ -155,6 +156,8 @@ def _detect_instruction_in_free_text(text):
         "lookup_patient returned",
         "get_clinic_slots returned",
         "book_slot returned",
+        "tool_result:",
+        "observation:",
         "red_flags=",
         "mandatory_tests=[]",
         "status=complete",
@@ -163,6 +166,12 @@ def _detect_instruction_in_free_text(text):
     # Overt instructions aimed at the system
     system_instruction_markers = [
         "system note:",
+        "[system",
+        "ignore previous",
+        "ignore all",
+        "override the",
+        "administrator approved",
+        "change autonomy",
         "skip the pre-referral",
         "skip the test check",
         "book the earliest available slot",
@@ -675,6 +684,125 @@ REGISTRY = {
 # yours is where you put the gate - and the answer is: in front of this
 # action, not in front of the agent.
 GATED_ACTION = {"B": "book_slot", "A": "issue_decision_letter"}
+
+
+# =====================================================================
+# CODE-LAYER TOOL CONTRACTS  (D3)
+# =====================================================================
+# Descriptors guide the model. These contracts constrain the program even
+# when a model ignores its descriptor or emits a malformed call.
+_B_TOOL_KEYS = {
+    "get_referral": {"referral_id"},
+    "lookup_patient": {"patient_id"},
+    "check_referral_criteria": {"specialty", "referral_id"},
+    "get_clinic_slots": {"specialty", "band", "from", "to"},
+    "book_slot": {"clinic", "date", "time", "referral_id"},
+    "as_of": set(),
+}
+
+
+def _require_exact_keys(tool, args, expected):
+    if not isinstance(args, dict):
+        raise TypeError("arguments must be a JSON object")
+    missing = expected - set(args)
+    extra = set(args) - expected
+    if missing:
+        raise ValueError("missing argument(s): %s" % ", ".join(sorted(missing)))
+    if extra:
+        raise ValueError("unexpected argument(s): %s" % ", ".join(sorted(extra)))
+
+
+def _require_id(field, value, pattern):
+    if not isinstance(value, str) or not re.fullmatch(pattern, value):
+        raise ValueError("%s has invalid format: %r" % (field, value))
+
+
+def _parse_iso_date(field, value):
+    if not isinstance(value, str):
+        raise TypeError("%s must be a YYYY-MM-DD string" % field)
+    try:
+        return date.fromisoformat(value)
+    except ValueError as exc:
+        raise ValueError("%s must be a valid YYYY-MM-DD date" % field) from exc
+
+
+def validate_tool_call(problem, name, args):
+    """Validate a model-generated tool call before dispatch.
+
+    Problem B receives strict structural, type, enum, date-window and slot
+    checks. Other problems still receive allowlist and callable-signature
+    enforcement from the dispatcher until equivalent domain contracts are
+    added for them.
+    """
+    if problem not in REGISTRY or name not in REGISTRY[problem]:
+        raise ValueError("tool is not allowed for Problem %s" % problem)
+    if not isinstance(args, dict):
+        raise TypeError("arguments must be a JSON object")
+    if problem != "B":
+        return True
+
+    expected = _B_TOOL_KEYS[name]
+    _require_exact_keys(name, args, expected)
+
+    if "referral_id" in args:
+        _require_id("referral_id", args["referral_id"], r"REF-\d{4}")
+    if "patient_id" in args:
+        _require_id("patient_id", args["patient_id"], r"P-\d{4}")
+    if "specialty" in args:
+        _require_specialty(args["specialty"])
+    if "band" in args:
+        _require_band(args["band"])
+
+    if name == "get_clinic_slots":
+        lo, hi = _require_window({"from": args["from"], "to": args["to"]})
+        lo_date, hi_date = date.fromisoformat(lo), date.fromisoformat(hi)
+        start = date.fromisoformat(as_of())
+        weeks = next(row["window_weeks"] for row in _load("B", "urgency_bands")
+                     if row["band"] == args["band"])
+        if lo_date < start or hi_date > start + timedelta(weeks=weeks):
+            raise ValueError(
+                "slot window must stay inside the %s band window %s..%s"
+                % (args["band"], start.isoformat(),
+                   (start + timedelta(weeks=weeks)).isoformat()))
+
+    if name == "book_slot":
+        _require_id("clinic", args["clinic"], r"[A-Z]+-C\d+")
+        _parse_iso_date("date", args["date"])
+        if not isinstance(args["time"], str):
+            raise TypeError("time must be an HH:MM string")
+        try:
+            datetime.strptime(args["time"], "%H:%M")
+        except ValueError as exc:
+            raise ValueError("time must be a valid HH:MM time") from exc
+        referral = get_referral(args["referral_id"])
+        if referral is None:
+            raise ValueError("referral_id does not exist")
+        slot = next((row for row in _load("B", "clinic_slots")
+                     if row["clinic"] == args["clinic"]
+                     and row["date"] == args["date"]
+                     and row["time"] == args["time"]), None)
+        if slot is None or slot.get("capacity_remaining", 0) <= 0:
+            raise ValueError("the requested slot does not exist or is full")
+        if slot["specialty"] != referral["specialty"]:
+            raise ValueError("slot specialty does not match the referral")
+
+    return True
+
+
+def detect_untrusted_output(name, result):
+    """Return the suspicious marker found in untrusted tool data, if any."""
+    if not isinstance(result, dict):
+        return None
+    explicit = result.get("instruction_in_free_text")
+    if explicit:
+        return str(explicit)
+    for field in ("clinical_summary", "summary", "note", "message", "description"):
+        value = result.get(field)
+        if isinstance(value, str):
+            marker = _detect_instruction_in_free_text(value)
+            if marker:
+                return "%s:%s" % (field, marker)
+    return None
 
 
 # =====================================================================

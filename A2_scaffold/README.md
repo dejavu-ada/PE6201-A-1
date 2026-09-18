@@ -155,7 +155,26 @@ and you re-run the whole battery.
 
 ---
 
-## What it deliberately does not do
+## Team v2 implementation status
+
+The original scaffold notes below describe what was initially left for the
+assignment. This merged team version now contains 50 Problem B cases, v1/v2
+descriptors, parallel/sequential experiments, and a 15-case D3 guardrail
+battery. For the current B2 status and exact commands, read:
+
+- `B2_MERGE_CHANGES.md`
+- `D3_GUARDRAIL_CHECKLIST.md`
+- `D3_REPORT_DRAFT.md`
+
+Run the completed safety battery with:
+
+```bash
+python3 run_guardrails.py --verbose
+```
+
+---
+
+## What the original scaffold deliberately did not do
 
 Left undone on purpose. Doing them is the assignment.
 

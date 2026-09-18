@@ -206,7 +206,7 @@ def format_descriptor(d):
                d["returns"], d["failure"]))
 
 
-def build_system_prompt(problem=None, descriptor_version="v2"):
+def build_system_prompt(problem=None, descriptor_version=None):
     """Assemble everything the model is told, once, before turn 1.
 
     THREE PARTS, and you should be able to say why each is there:
@@ -218,6 +218,8 @@ def build_system_prompt(problem=None, descriptor_version="v2"):
     again, and the diff is exactly what you are claiming to have
     measured.
     """
+    if descriptor_version is None:
+        descriptor_version = getattr(config, "DESCRIPTOR_VERSION", "v2") or "v2"
     problem = problem or config.PROBLEM
     names = sorted(tools.REGISTRY[problem])
     descriptor_table = tools.DESCRIPTOR_SETS[descriptor_version]
@@ -239,13 +241,15 @@ def build_system_prompt(problem=None, descriptor_version="v2"):
     return "\n".join(parts)
 
 
-def audit(problem=None, descriptor_version="v2"):
+def audit(problem=None, descriptor_version=None):
     """Print the prompt, and what it cost you in tokens, and what is missing.
 
     Run this whenever you change a descriptor. The token count is the
     other half of D2(b): a descriptor rewrite that doubles the prompt has
     to earn that on every single turn of every single run.
     """
+    if descriptor_version is None:
+        descriptor_version = getattr(config, "DESCRIPTOR_VERSION", "v2") or "v2"
     problem = problem or config.PROBLEM
     text = build_system_prompt(problem, descriptor_version)
     names = sorted(tools.REGISTRY[problem])

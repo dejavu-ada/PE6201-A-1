@@ -57,7 +57,8 @@ SCRIPTS = {
                     "has an appointment. Fire both together.",
          "calls": [("check_referral_criteria", {"specialty": "OPH",
                                                 "referral_id": "REF-5602"}),
-                   ("lookup_patient", {"patient_id": "P-1180"})]},
+                   ("lookup_patient", {"patient_id": "P-1180"}),
+                   ("as_of", {})]},
 
         {"thought": "No red flag, right department, VF-01 attached, no "
                     "duplicate. Band is routine, so the window runs 8 weeks "
@@ -96,7 +97,8 @@ SCRIPTS = {
 
         {"thought": "The specialty criteria and patient history are independent. Fire both together.",
          "calls": [("check_referral_criteria", {"specialty": "OPH", "referral_id": "REF-5590"}),
-                   ("lookup_patient", {"patient_id": "P-1192"})]},
+                   ("lookup_patient", {"patient_id": "P-1192"}),
+                   ("as_of", {})]},
         {"final": {
             "decision": "escalate",
             "trigger": "red_flag_term",
@@ -114,7 +116,8 @@ SCRIPTS = {
 
         {"thought": "The specialty criteria and patient history are independent. Fire both together.",
          "calls": [("check_referral_criteria", {"specialty": "OPH", "referral_id": "REF-5614"}),
-                   ("lookup_patient", {"patient_id": "P-1227"})]},
+                   ("lookup_patient", {"patient_id": "P-1227"}),
+                   ("as_of", {})]},
 
         {"final": {
             "decision": "request_information",
@@ -133,7 +136,8 @@ SCRIPTS = {
 
         {"thought": "The specialty criteria and patient history are independent. Fire both together.",
          "calls": [("check_referral_criteria", {"specialty": "DER", "referral_id": "REF-5620"}),
-                   ("lookup_patient", {"patient_id": "P-1241"})]},
+                   ("lookup_patient", {"patient_id": "P-1241"}),
+                   ("as_of", {})]},
 
         {"thought": "All stopping gates passed. Band is routine; query the 8-week legal window from 2026-09-09 to 2026-11-04.",
          "calls": [("get_clinic_slots", {"specialty": "DER", "band": "routine",
@@ -164,7 +168,8 @@ SCRIPTS = {
 
         {"thought": "The specialty criteria and patient history are independent. Fire both together.",
          "calls": [("check_referral_criteria", {"specialty": "CARD", "referral_id": "REF-5631"}),
-                   ("lookup_patient", {"patient_id": "P-1233"})]},
+                   ("lookup_patient", {"patient_id": "P-1233"}),
+                   ("as_of", {})]},
 
         {"thought": "All stopping gates passed. Band is urgent; query the 2-week legal window from 2026-09-09 to 2026-09-23.",
          "calls": [("get_clinic_slots", {"specialty": "CARD", "band": "urgent",
@@ -195,7 +200,8 @@ SCRIPTS = {
 
         {"thought": "The specialty criteria and patient history are independent. Fire both together.",
          "calls": [("check_referral_criteria", {"specialty": "ORT", "referral_id": "REF-5645"}),
-                   ("lookup_patient", {"patient_id": "P-1215"})]},
+                   ("lookup_patient", {"patient_id": "P-1215"}),
+                   ("as_of", {})]},
 
         {"thought": "All stopping gates passed. Band is routine; query the 8-week legal window from 2026-09-09 to 2026-11-04.",
          "calls": [("get_clinic_slots", {"specialty": "ORT", "band": "routine",
@@ -226,7 +232,8 @@ SCRIPTS = {
 
         {"thought": "The specialty criteria and patient history are independent. Fire both together.",
          "calls": [("check_referral_criteria", {"specialty": "CARD", "referral_id": "REF-5658"}),
-                   ("lookup_patient", {"patient_id": "P-1180"})]},
+                   ("lookup_patient", {"patient_id": "P-1180"}),
+                   ("as_of", {})]},
 
         {"final": {
             "decision": "request_information",
@@ -245,7 +252,8 @@ SCRIPTS = {
 
         {"thought": "The specialty criteria and patient history are independent. Fire both together.",
          "calls": [("check_referral_criteria", {"specialty": "ORT", "referral_id": "REF-5663"}),
-                   ("lookup_patient", {"patient_id": "P-1227"})]},
+                   ("lookup_patient", {"patient_id": "P-1227"}),
+                   ("as_of", {})]},
 
         {"final": {
             "decision": "request_information",
@@ -264,7 +272,8 @@ SCRIPTS = {
 
         {"thought": "The specialty criteria and patient history are independent. Fire both together.",
          "calls": [("check_referral_criteria", {"specialty": "OPH", "referral_id": "REF-5671"}),
-                   ("lookup_patient", {"patient_id": "P-1241"})]},
+                   ("lookup_patient", {"patient_id": "P-1241"}),
+                   ("as_of", {})]},
         {"final": {
             "decision": "escalate",
             "trigger": "specialty_mismatch",
@@ -282,7 +291,8 @@ SCRIPTS = {
 
         {"thought": "The specialty criteria and patient history are independent. Fire both together.",
          "calls": [("check_referral_criteria", {"specialty": "OPH", "referral_id": "REF-5684"}),
-                   ("lookup_patient", {"patient_id": "P-1204"})]},
+                   ("lookup_patient", {"patient_id": "P-1204"}),
+                   ("as_of", {})]},
         {"final": {
             "decision": "escalate",
             "trigger": "duplicate_future_appointment",
@@ -300,7 +310,8 @@ SCRIPTS = {
 
         {"thought": "The specialty criteria and patient history are independent. Fire both together.",
          "calls": [("check_referral_criteria", {"specialty": "ENT", "referral_id": "REF-5697"}),
-                   ("lookup_patient", {"patient_id": "P-1233"})]},
+                   ("lookup_patient", {"patient_id": "P-1233"}),
+                   ("as_of", {})]},
 
         {"thought": "All earlier gates passed. Band is urgent; query the 2-week legal window from 2026-09-09 to 2026-09-23.",
          "calls": [("get_clinic_slots", {"specialty": "ENT", "band": "urgent",
@@ -325,7 +336,8 @@ SCRIPTS = {
 
         {"thought": "The specialty criteria and patient history are independent. Fire both together.",
          "calls": [("check_referral_criteria", {"specialty": "OPH", "referral_id": "REF-5703"}),
-                   ("lookup_patient", {"patient_id": "P-1180"})]},
+                   ("lookup_patient", {"patient_id": "P-1180"}),
+                   ("as_of", {})]},
         {"final": {
             "decision": "escalate",
             "trigger": "instruction_in_referral_free_text",
@@ -343,7 +355,8 @@ SCRIPTS = {
 
         {"thought": "The specialty criteria and patient history are independent. Fire both together.",
          "calls": [("check_referral_criteria", {"specialty": "CARD", "referral_id": "REF-5711"}),
-                   ("lookup_patient", {"patient_id": "P-1215"})]},
+                   ("lookup_patient", {"patient_id": "P-1215"}),
+                   ("as_of", {})]},
         {"final": {
             "decision": "escalate",
             "trigger": "instruction_in_referral_free_text",
@@ -361,7 +374,8 @@ SCRIPTS = {
 
         {"thought": "The specialty criteria and patient history are independent. Fire both together.",
          "calls": [("check_referral_criteria", {"specialty": "ORT", "referral_id": "REF-5725"}),
-                   ("lookup_patient", {"patient_id": "P-1233"})]},
+                   ("lookup_patient", {"patient_id": "P-1233"}),
+                   ("as_of", {})]},
         {"final": {
             "decision": "escalate",
             "trigger": "red_flag_term",
@@ -379,7 +393,8 @@ SCRIPTS = {
 
         {"thought": "The specialty criteria and patient history are independent. Fire both together.",
          "calls": [("check_referral_criteria", {"specialty": "ENT", "referral_id": "REF-5738"}),
-                   ("lookup_patient", {"patient_id": "P-1241"})]},
+                   ("lookup_patient", {"patient_id": "P-1241"}),
+                   ("as_of", {})]},
 
         {"thought": "All stopping gates passed. Band is routine; query the 8-week legal window from 2026-09-09 to 2026-11-04.",
          "calls": [("get_clinic_slots", {"specialty": "ENT", "band": "routine",
@@ -410,7 +425,8 @@ SCRIPTS = {
 
         {"thought": "The specialty criteria and patient history are independent. Fire both together.",
          "calls": [("check_referral_criteria", {"specialty": "NEU", "referral_id": "REF-6103"}),
-                   ("lookup_patient", {"patient_id": "P-2005"})]},
+                   ("lookup_patient", {"patient_id": "P-2005"}),
+                   ("as_of", {})]},
 
         {"thought": "All stopping gates passed. Band is routine; query the 8-week legal window from 2026-09-09 to 2026-11-04.",
          "calls": [("get_clinic_slots", {"specialty": "NEU", "band": "routine",
@@ -441,7 +457,8 @@ SCRIPTS = {
 
         {"thought": "The specialty criteria and patient history are independent. Fire both together.",
          "calls": [("check_referral_criteria", {"specialty": "CARD", "referral_id": "REF-6104"}),
-                   ("lookup_patient", {"patient_id": "P-2006"})]},
+                   ("lookup_patient", {"patient_id": "P-2006"}),
+                   ("as_of", {})]},
 
         {"thought": "All stopping gates passed. Band is routine; query the 8-week legal window from 2026-09-09 to 2026-11-04.",
          "calls": [("get_clinic_slots", {"specialty": "CARD", "band": "routine",
@@ -471,7 +488,8 @@ SCRIPTS = {
 
         {"thought": "The specialty criteria and patient history are independent. Fire both together.",
          "calls": [("check_referral_criteria", {"specialty": "NEU", "referral_id": "REF-6105"}),
-                   ("lookup_patient", {"patient_id": "P-2007"})]},
+                   ("lookup_patient", {"patient_id": "P-2007"}),
+                   ("as_of", {})]},
 
         {"thought": "All stopping gates passed. Band is urgent; query the 2-week legal window from 2026-09-09 to 2026-09-23.",
          "calls": [("get_clinic_slots", {"specialty": "NEU", "band": "urgent",
@@ -501,7 +519,8 @@ SCRIPTS = {
 
         {"thought": "The specialty criteria and patient history are independent. Fire both together.",
          "calls": [("check_referral_criteria", {"specialty": "DER", "referral_id": "REF-6106"}),
-                   ("lookup_patient", {"patient_id": "P-2008"})]},
+                   ("lookup_patient", {"patient_id": "P-2008"}),
+                   ("as_of", {})]},
 
         {"thought": "All stopping gates passed. Band is routine; query the 8-week legal window from 2026-09-09 to 2026-11-04.",
          "calls": [("get_clinic_slots", {"specialty": "DER", "band": "routine",
@@ -531,7 +550,8 @@ SCRIPTS = {
 
         {"thought": "The specialty criteria and patient history are independent. Fire both together.",
          "calls": [("check_referral_criteria", {"specialty": "DER", "referral_id": "REF-6107"}),
-                   ("lookup_patient", {"patient_id": "P-2009"})]},
+                   ("lookup_patient", {"patient_id": "P-2009"}),
+                   ("as_of", {})]},
 
         {"thought": "All stopping gates passed. Band is routine; query the 8-week legal window from 2026-09-09 to 2026-11-04.",
          "calls": [("get_clinic_slots", {"specialty": "DER", "band": "routine",
@@ -561,7 +581,8 @@ SCRIPTS = {
 
         {"thought": "The specialty criteria and patient history are independent. Fire both together.",
          "calls": [("check_referral_criteria", {"specialty": "OPH", "referral_id": "REF-6201"}),
-                   ("lookup_patient", {"patient_id": "P-2010"})]},
+                   ("lookup_patient", {"patient_id": "P-2010"}),
+                   ("as_of", {})]},
 
         {"thought": "All stopping gates passed. Band is routine; query the 8-week legal window from 2026-09-09 to 2026-11-04.",
          "calls": [("get_clinic_slots", {"specialty": "OPH", "band": "routine",
@@ -592,7 +613,8 @@ SCRIPTS = {
 
         {"thought": "The specialty criteria and patient history are independent. Fire both together.",
          "calls": [("check_referral_criteria", {"specialty": "CARD", "referral_id": "REF-6202"}),
-                   ("lookup_patient", {"patient_id": "P-2011"})]},
+                   ("lookup_patient", {"patient_id": "P-2011"}),
+                   ("as_of", {})]},
 
         {"thought": "All stopping gates passed. Band is urgent; query the 2-week legal window from 2026-09-09 to 2026-09-23.",
          "calls": [("get_clinic_slots", {"specialty": "CARD", "band": "urgent",
@@ -623,7 +645,8 @@ SCRIPTS = {
 
         {"thought": "The specialty criteria and patient history are independent. Fire both together.",
          "calls": [("check_referral_criteria", {"specialty": "ENT", "referral_id": "REF-6203"}),
-                   ("lookup_patient", {"patient_id": "P-2012"})]},
+                   ("lookup_patient", {"patient_id": "P-2012"}),
+                   ("as_of", {})]},
 
         {"thought": "All stopping gates passed. Band is routine; query the 8-week legal window from 2026-09-09 to 2026-11-04.",
          "calls": [("get_clinic_slots", {"specialty": "ENT", "band": "routine",
@@ -653,7 +676,8 @@ SCRIPTS = {
 
         {"thought": "The specialty criteria and patient history are independent. Fire both together.",
          "calls": [("check_referral_criteria", {"specialty": "DER", "referral_id": "REF-6204"}),
-                   ("lookup_patient", {"patient_id": "P-2013"})]},
+                   ("lookup_patient", {"patient_id": "P-2013"}),
+                   ("as_of", {})]},
 
         {"thought": "All stopping gates passed. Band is soon; query the 4-week legal window from 2026-09-09 to 2026-10-07.",
          "calls": [("get_clinic_slots", {"specialty": "DER", "band": "soon",
@@ -684,7 +708,8 @@ SCRIPTS = {
 
         {"thought": "The specialty criteria and patient history are independent. Fire both together.",
          "calls": [("check_referral_criteria", {"specialty": "ORT", "referral_id": "REF-6205"}),
-                   ("lookup_patient", {"patient_id": "P-2014"})]},
+                   ("lookup_patient", {"patient_id": "P-2014"}),
+                   ("as_of", {})]},
 
         {"thought": "All stopping gates passed. Band is routine; query the 8-week legal window from 2026-09-09 to 2026-11-04.",
          "calls": [("get_clinic_slots", {"specialty": "ORT", "band": "routine",
@@ -715,7 +740,8 @@ SCRIPTS = {
 
         {"thought": "The specialty criteria and patient history are independent. Fire both together.",
          "calls": [("check_referral_criteria", {"specialty": "CARD", "referral_id": "REF-6211"}),
-                   ("lookup_patient", {"patient_id": "P-2015"})]},
+                   ("lookup_patient", {"patient_id": "P-2015"}),
+                   ("as_of", {})]},
 
         {"thought": "All stopping gates passed. Band is routine; query the 8-week legal window from 2026-09-09 to 2026-11-04.",
          "calls": [("get_clinic_slots", {"specialty": "CARD", "band": "routine",
@@ -746,7 +772,8 @@ SCRIPTS = {
 
         {"thought": "The specialty criteria and patient history are independent. Fire both together.",
          "calls": [("check_referral_criteria", {"specialty": "OPH", "referral_id": "REF-6212"}),
-                   ("lookup_patient", {"patient_id": "P-2016"})]},
+                   ("lookup_patient", {"patient_id": "P-2016"}),
+                   ("as_of", {})]},
 
         {"thought": "All stopping gates passed. Band is routine; query the 8-week legal window from 2026-09-09 to 2026-11-04.",
          "calls": [("get_clinic_slots", {"specialty": "OPH", "band": "routine",
@@ -776,7 +803,8 @@ SCRIPTS = {
 
         {"thought": "The specialty criteria and patient history are independent. Fire both together.",
          "calls": [("check_referral_criteria", {"specialty": "ORT", "referral_id": "REF-6213"}),
-                   ("lookup_patient", {"patient_id": "P-2017"})]},
+                   ("lookup_patient", {"patient_id": "P-2017"}),
+                   ("as_of", {})]},
 
         {"thought": "All stopping gates passed. Band is soon; query the 4-week legal window from 2026-09-09 to 2026-10-07.",
          "calls": [("get_clinic_slots", {"specialty": "ORT", "band": "soon",
@@ -807,7 +835,8 @@ SCRIPTS = {
 
         {"thought": "The specialty criteria and patient history are independent. Fire both together.",
          "calls": [("check_referral_criteria", {"specialty": "DER", "referral_id": "REF-6214"}),
-                   ("lookup_patient", {"patient_id": "P-2018"})]},
+                   ("lookup_patient", {"patient_id": "P-2018"}),
+                   ("as_of", {})]},
 
         {"thought": "All stopping gates passed. Band is routine; query the 8-week legal window from 2026-09-09 to 2026-11-04.",
          "calls": [("get_clinic_slots", {"specialty": "DER", "band": "routine",
@@ -838,7 +867,8 @@ SCRIPTS = {
 
         {"thought": "The specialty criteria and patient history are independent. Fire both together.",
          "calls": [("check_referral_criteria", {"specialty": "ENT", "referral_id": "REF-6215"}),
-                   ("lookup_patient", {"patient_id": "P-2019"})]},
+                   ("lookup_patient", {"patient_id": "P-2019"}),
+                   ("as_of", {})]},
 
         {"thought": "All stopping gates passed. Band is soon; query the 4-week legal window from 2026-09-09 to 2026-10-07.",
          "calls": [("get_clinic_slots", {"specialty": "ENT", "band": "soon",
@@ -869,7 +899,8 @@ SCRIPTS = {
 
         {"thought": "The specialty criteria and patient history are independent. Fire both together.",
          "calls": [("check_referral_criteria", {"specialty": "OPH", "referral_id": "REF-6221"}),
-                   ("lookup_patient", {"patient_id": "P-2020"})]},
+                   ("lookup_patient", {"patient_id": "P-2020"}),
+                   ("as_of", {})]},
 
         {"thought": "All stopping gates passed. Band is soon; query the 4-week legal window from 2026-09-09 to 2026-10-07.",
          "calls": [("get_clinic_slots", {"specialty": "OPH", "band": "soon",
@@ -900,7 +931,8 @@ SCRIPTS = {
 
         {"thought": "The specialty criteria and patient history are independent. Fire both together.",
          "calls": [("check_referral_criteria", {"specialty": "CARD", "referral_id": "REF-6222"}),
-                   ("lookup_patient", {"patient_id": "P-2021"})]},
+                   ("lookup_patient", {"patient_id": "P-2021"}),
+                   ("as_of", {})]},
 
         {"thought": "All stopping gates passed. Band is routine; query the 8-week legal window from 2026-09-09 to 2026-11-04.",
          "calls": [("get_clinic_slots", {"specialty": "CARD", "band": "routine",
@@ -930,7 +962,8 @@ SCRIPTS = {
 
         {"thought": "The specialty criteria and patient history are independent. Fire both together.",
          "calls": [("check_referral_criteria", {"specialty": "ORT", "referral_id": "REF-6223"}),
-                   ("lookup_patient", {"patient_id": "P-2022"})]},
+                   ("lookup_patient", {"patient_id": "P-2022"}),
+                   ("as_of", {})]},
 
         {"thought": "All stopping gates passed. Band is urgent; query the 2-week legal window from 2026-09-09 to 2026-09-23.",
          "calls": [("get_clinic_slots", {"specialty": "ORT", "band": "urgent",
@@ -961,7 +994,8 @@ SCRIPTS = {
 
         {"thought": "The specialty criteria and patient history are independent. Fire both together.",
          "calls": [("check_referral_criteria", {"specialty": "ENT", "referral_id": "REF-6224"}),
-                   ("lookup_patient", {"patient_id": "P-2023"})]},
+                   ("lookup_patient", {"patient_id": "P-2023"}),
+                   ("as_of", {})]},
 
         {"thought": "All stopping gates passed. Band is routine; query the 8-week legal window from 2026-09-09 to 2026-11-04.",
          "calls": [("get_clinic_slots", {"specialty": "ENT", "band": "routine",
@@ -992,7 +1026,8 @@ SCRIPTS = {
 
         {"thought": "The specialty criteria and patient history are independent. Fire both together.",
          "calls": [("check_referral_criteria", {"specialty": "DER", "referral_id": "REF-6225"}),
-                   ("lookup_patient", {"patient_id": "P-2024"})]},
+                   ("lookup_patient", {"patient_id": "P-2024"}),
+                   ("as_of", {})]},
 
         {"thought": "All stopping gates passed. Band is routine; query the 8-week legal window from 2026-09-09 to 2026-11-04.",
          "calls": [("get_clinic_slots", {"specialty": "DER", "band": "routine",
@@ -1023,7 +1058,8 @@ SCRIPTS = {
 
         {"thought": "The specialty criteria and patient history are independent. Fire both together.",
          "calls": [("check_referral_criteria", {"specialty": "CARD", "referral_id": "REF-6231"}),
-                   ("lookup_patient", {"patient_id": "P-2025"})]},
+                   ("lookup_patient", {"patient_id": "P-2025"}),
+                   ("as_of", {})]},
 
         {"thought": "All stopping gates passed. Band is soon; query the 4-week legal window from 2026-09-09 to 2026-10-07.",
          "calls": [("get_clinic_slots", {"specialty": "CARD", "band": "soon",
@@ -1054,7 +1090,8 @@ SCRIPTS = {
 
         {"thought": "The specialty criteria and patient history are independent. Fire both together.",
          "calls": [("check_referral_criteria", {"specialty": "ORT", "referral_id": "REF-6232"}),
-                   ("lookup_patient", {"patient_id": "P-2026"})]},
+                   ("lookup_patient", {"patient_id": "P-2026"}),
+                   ("as_of", {})]},
 
         {"thought": "All stopping gates passed. Band is routine; query the 8-week legal window from 2026-09-09 to 2026-11-04.",
          "calls": [("get_clinic_slots", {"specialty": "ORT", "band": "routine",
@@ -1084,7 +1121,8 @@ SCRIPTS = {
 
         {"thought": "The specialty criteria and patient history are independent. Fire both together.",
          "calls": [("check_referral_criteria", {"specialty": "OPH", "referral_id": "REF-6233"}),
-                   ("lookup_patient", {"patient_id": "P-2027"})]},
+                   ("lookup_patient", {"patient_id": "P-2027"}),
+                   ("as_of", {})]},
 
         {"thought": "All stopping gates passed. Band is routine; query the 8-week legal window from 2026-09-09 to 2026-11-04.",
          "calls": [("get_clinic_slots", {"specialty": "OPH", "band": "routine",
@@ -1115,7 +1153,8 @@ SCRIPTS = {
 
         {"thought": "The specialty criteria and patient history are independent. Fire both together.",
          "calls": [("check_referral_criteria", {"specialty": "DER", "referral_id": "REF-6234"}),
-                   ("lookup_patient", {"patient_id": "P-2028"})]},
+                   ("lookup_patient", {"patient_id": "P-2028"}),
+                   ("as_of", {})]},
 
         {"thought": "All stopping gates passed. Band is soon; query the 4-week legal window from 2026-09-09 to 2026-10-07.",
          "calls": [("get_clinic_slots", {"specialty": "DER", "band": "soon",
@@ -1146,7 +1185,8 @@ SCRIPTS = {
 
         {"thought": "The specialty criteria and patient history are independent. Fire both together.",
          "calls": [("check_referral_criteria", {"specialty": "ENT", "referral_id": "REF-6235"}),
-                   ("lookup_patient", {"patient_id": "P-2029"})]},
+                   ("lookup_patient", {"patient_id": "P-2029"}),
+                   ("as_of", {})]},
 
         {"thought": "All stopping gates passed. Band is routine; query the 8-week legal window from 2026-09-09 to 2026-11-04.",
          "calls": [("get_clinic_slots", {"specialty": "ENT", "band": "routine",
@@ -1176,7 +1216,8 @@ SCRIPTS = {
 
         {"thought": "The specialty criteria and patient history are independent. Fire both together.",
          "calls": [("check_referral_criteria", {"specialty": "ENT", "referral_id": "REF-6241"}),
-                   ("lookup_patient", {"patient_id": "P-2030"})]},
+                   ("lookup_patient", {"patient_id": "P-2030"}),
+                   ("as_of", {})]},
 
         {"thought": "All stopping gates passed. Band is routine; query the 8-week legal window from 2026-09-09 to 2026-11-04.",
          "calls": [("get_clinic_slots", {"specialty": "ENT", "band": "routine",
@@ -1207,7 +1248,8 @@ SCRIPTS = {
 
         {"thought": "The specialty criteria and patient history are independent. Fire both together.",
          "calls": [("check_referral_criteria", {"specialty": "OPH", "referral_id": "REF-6242"}),
-                   ("lookup_patient", {"patient_id": "P-2031"})]},
+                   ("lookup_patient", {"patient_id": "P-2031"}),
+                   ("as_of", {})]},
 
         {"thought": "All stopping gates passed. Band is urgent; query the 2-week legal window from 2026-09-09 to 2026-09-23.",
          "calls": [("get_clinic_slots", {"specialty": "OPH", "band": "urgent",
@@ -1238,7 +1280,8 @@ SCRIPTS = {
 
         {"thought": "The specialty criteria and patient history are independent. Fire both together.",
          "calls": [("check_referral_criteria", {"specialty": "CARD", "referral_id": "REF-6243"}),
-                   ("lookup_patient", {"patient_id": "P-2032"})]},
+                   ("lookup_patient", {"patient_id": "P-2032"}),
+                   ("as_of", {})]},
 
         {"thought": "All stopping gates passed. Band is routine; query the 8-week legal window from 2026-09-09 to 2026-11-04.",
          "calls": [("get_clinic_slots", {"specialty": "CARD", "band": "routine",
@@ -1268,7 +1311,8 @@ SCRIPTS = {
 
         {"thought": "The specialty criteria and patient history are independent. Fire both together.",
          "calls": [("check_referral_criteria", {"specialty": "ORT", "referral_id": "REF-6244"}),
-                   ("lookup_patient", {"patient_id": "P-2033"})]},
+                   ("lookup_patient", {"patient_id": "P-2033"}),
+                   ("as_of", {})]},
 
         {"thought": "All stopping gates passed. Band is routine; query the 8-week legal window from 2026-09-09 to 2026-11-04.",
          "calls": [("get_clinic_slots", {"specialty": "ORT", "band": "routine",
@@ -1299,7 +1343,8 @@ SCRIPTS = {
 
         {"thought": "The specialty criteria and patient history are independent. Fire both together.",
          "calls": [("check_referral_criteria", {"specialty": "DER", "referral_id": "REF-6245"}),
-                   ("lookup_patient", {"patient_id": "P-2034"})]},
+                   ("lookup_patient", {"patient_id": "P-2034"}),
+                   ("as_of", {})]},
 
         {"thought": "All stopping gates passed. Band is routine; query the 8-week legal window from 2026-09-09 to 2026-11-04.",
          "calls": [("get_clinic_slots", {"specialty": "DER", "band": "routine",
@@ -1330,7 +1375,8 @@ SCRIPTS = {
 
         {"thought": "The specialty criteria and patient history are independent. Fire both together.",
          "calls": [("check_referral_criteria", {"specialty": "CARD", "referral_id": "REF-6251"}),
-                   ("lookup_patient", {"patient_id": "P-2035"})]},
+                   ("lookup_patient", {"patient_id": "P-2035"}),
+                   ("as_of", {})]},
 
         {"thought": "All stopping gates passed. Band is routine; query the 8-week legal window from 2026-09-09 to 2026-11-04.",
          "calls": [("get_clinic_slots", {"specialty": "CARD", "band": "routine",
@@ -1361,7 +1407,8 @@ SCRIPTS = {
 
         {"thought": "The specialty criteria and patient history are independent. Fire both together.",
          "calls": [("check_referral_criteria", {"specialty": "OPH", "referral_id": "REF-6252"}),
-                   ("lookup_patient", {"patient_id": "P-2036"})]},
+                   ("lookup_patient", {"patient_id": "P-2036"}),
+                   ("as_of", {})]},
 
         {"thought": "All stopping gates passed. Band is soon; query the 4-week legal window from 2026-09-09 to 2026-10-07.",
          "calls": [("get_clinic_slots", {"specialty": "OPH", "band": "soon",
@@ -1392,7 +1439,8 @@ SCRIPTS = {
 
         {"thought": "The specialty criteria and patient history are independent. Fire both together.",
          "calls": [("check_referral_criteria", {"specialty": "ENT", "referral_id": "REF-6253"}),
-                   ("lookup_patient", {"patient_id": "P-2037"})]},
+                   ("lookup_patient", {"patient_id": "P-2037"}),
+                   ("as_of", {})]},
 
         {"thought": "All stopping gates passed. Band is routine; query the 8-week legal window from 2026-09-09 to 2026-11-04.",
          "calls": [("get_clinic_slots", {"specialty": "ENT", "band": "routine",
@@ -1422,7 +1470,8 @@ SCRIPTS = {
 
         {"thought": "The specialty criteria and patient history are independent. Fire both together.",
          "calls": [("check_referral_criteria", {"specialty": "ORT", "referral_id": "REF-6254"}),
-                   ("lookup_patient", {"patient_id": "P-2038"})]},
+                   ("lookup_patient", {"patient_id": "P-2038"}),
+                   ("as_of", {})]},
 
         {"thought": "All stopping gates passed. Band is soon; query the 4-week legal window from 2026-09-09 to 2026-10-07.",
          "calls": [("get_clinic_slots", {"specialty": "ORT", "band": "soon",
@@ -1453,7 +1502,8 @@ SCRIPTS = {
 
         {"thought": "The specialty criteria and patient history are independent. Fire both together.",
          "calls": [("check_referral_criteria", {"specialty": "DER", "referral_id": "REF-6255"}),
-                   ("lookup_patient", {"patient_id": "P-2039"})]},
+                   ("lookup_patient", {"patient_id": "P-2039"}),
+                   ("as_of", {})]},
 
         {"thought": "All stopping gates passed. Band is routine; query the 8-week legal window from 2026-09-09 to 2026-11-04.",
          "calls": [("get_clinic_slots", {"specialty": "DER", "band": "routine",
@@ -1528,7 +1578,8 @@ class ScriptedBackend:
 
     name = "scripted"
 
-    def __init__(self, case_id):
+
+    def __init__(self, case_id, parallel_tools=True):
         if case_id not in SCRIPTS:
             raise SystemExit(
                 "\n  No script for case %r.\n"
@@ -1538,8 +1589,40 @@ class ScriptedBackend:
                 "    2. set BACKEND = \"live\" in config.py (this costs money).\n"
                 "  Scripted cases so far: %s\n"
                 % (case_id, case_id, ", ".join(sorted(SCRIPTS))))
-        self.steps = SCRIPTS[case_id]
+        
+        original_steps = SCRIPTS[case_id]
+
+        if parallel_tools:
+            self.steps = original_steps
+
+        else:
+            self.steps = []
+
+            for step in original_steps:
+
+                calls = step.get("calls")
+
+                if calls and len(calls) > 1:
+
+                    for i, call in enumerate(calls):
+
+                        new_step = dict(step)
+
+                        new_step["calls"] = [call]
+
+                        if i > 0:
+                            new_step["thought"] = (
+                                "Sequential continuation: use the previous "
+                                "observation before executing the next tool."
+                            )
+
+                        self.steps.append(new_step)
+
+                else:
+                    self.steps.append(step)
+
         self.i = 0
+        
 
     def next_move(self, transcript):
         """`transcript` is ignored on purpose - a script does not react.
@@ -1656,10 +1739,26 @@ def _live_call(messages):
     )
 
 
-def make_backend(case_id, tool_descriptors=None, system_prompt=""):
+def make_backend(
+    case_id,
+    tool_descriptors=None,
+    system_prompt="",
+    parallel_tools=True
+):
     if config.BACKEND == "scripted":
-        return ScriptedBackend(case_id)
+        return ScriptedBackend(
+            case_id,
+            parallel_tools=parallel_tools
+        )
+
     if config.BACKEND == "live":
-        return LiveBackend(case_id, tool_descriptors or [], system_prompt)
-    raise SystemExit("BACKEND must be 'scripted' or 'live', not %r"
-                     % config.BACKEND)
+        return LiveBackend(
+            case_id,
+            tool_descriptors or [],
+            system_prompt
+        )
+
+    raise SystemExit(
+        "BACKEND must be 'scripted' or 'live', not %r"
+        % config.BACKEND
+    )

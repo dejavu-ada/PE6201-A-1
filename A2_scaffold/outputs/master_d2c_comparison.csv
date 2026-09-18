@@ -1,0 +1,11 @@
+metric,sequential,parallel,delta_par_minus_seq
+trials,70,70,0
+passed trials,70,70,0
+pass rate,1.0,1.0,0.0
+median turns,5.0,4.0,-1.0
+worst turns,6,4,-2
+total cost US$,0.178752,0.126684,-0.052068
+tokens_in,1612800,1126200,-486600
+tokens_out,43680,35160,-8520
+negative pass rate (subset),1.0,1.0,0.0
+step_cap hits,0,0,0

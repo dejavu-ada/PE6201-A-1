@@ -180,6 +180,19 @@ the action is irreversible.
 | `get_clinic_slots(specialty, band, **window)` | Find a slot with capacity in the correct band and window | Read-only search; does not book. Removing it prevents the booking trajectory in D7. |
 | `book_slot(clinic, date, time, referral_id)` | Record the simulated appointment | The only Problem B write; adds both a descriptor and the need for an autonomy gate. |
 
+#### D2(a) three-question scoring table
+
+| Tool | 1. Does a task actually fail without it? | 2. Could the model confuse it with a neighbour? | 3. What does it cost when it is never called? |
+|---|---|---|---|
+| `get_referral` | Without the patient, specialty, and clinical summary, every later tool argument fails. | No. It is the only referral entry point. | 622 descriptor characters, approximately 155 prefix tokens per model turn; it also enlarges the callable surface. |
+| `check_referral_criteria` | The agent can choose the wrong red-flag, department, mandatory-test, or urgency route. | It is closest to `lookup_patient`, but this tool returns protocol rules rather than patient state. | 1,103 descriptor characters, approximately 275 prefix tokens per model turn; it also enlarges the callable surface. |
+| `lookup_patient` | The agent can miss a future appointment in the same specialty and create a duplicate booking. | It is closest to `check_referral_criteria`, but this tool returns patient state rather than protocol rules. | 725 descriptor characters, approximately 181 prefix tokens per model turn; it also enlarges the callable surface. |
+| `as_of` | The model can invent the current date or incorrectly use `date_received` to calculate the booking window. | No. It is the only authoritative zero-argument date tool. | 533 descriptor characters, approximately 133 prefix tokens per model turn; it also enlarges the callable surface. |
+| `get_clinic_slots` | No legal, available appointment inside the permitted window can be established. | It is closest to `book_slot`, but this tool is a read-only search rather than a write action. | 1,258 descriptor characters, approximately 314 prefix tokens per model turn; it also enlarges the callable surface. |
+| `book_slot` | No confirmed appointment can be recorded. | It is closest to `get_clinic_slots`, but this is the only gated write action. | 855 descriptor characters, approximately 213 prefix tokens per model turn; it also enlarges the callable surface. |
+
+The token figures are rough prompt-prefix estimates based on approximately four characters per token; exact counts vary by model tokenizer. Each retained tool either changes the routing decision or supplies an argument that another tool cannot safely infer.
+
 No separate web-search, contact-only, or letter-generation tool is exposed
 for Problem B. The required evidence is local, contact data comes with the
 patient lookup, and the required write is a log record.
